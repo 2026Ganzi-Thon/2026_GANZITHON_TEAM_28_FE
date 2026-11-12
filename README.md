@@ -15,6 +15,8 @@ pnpm dev
 
 ## 구조
 
-- `src/screens/` — 화면별 폴더와 라우팅 목록
+- `src/pages/` — 화면별 폴더와 라우팅 목록
+- `src/api/` — API 호출 함수
+- `src/styles/` — 전역 스타일
 - `src/components/` — 버튼, 다이얼로그, 피드백 UI 폴더
 - [화면 목록과 페이지 경로](docs/screen-routes.md)

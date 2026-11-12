@@ -1,8 +1,8 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import { screens } from './screens/routes.js'
-import './styles.css'
+import { screens } from './pages/routes.js'
+import './styles/global.css'
 
 function App() {
   return (
