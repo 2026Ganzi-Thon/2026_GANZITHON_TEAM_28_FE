@@ -4,6 +4,7 @@ import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { screens } from './pages/routes.js'
 import NewGoalPage from './pages/new-goal/NewGoalPage.jsx'
 import ActionPage from './pages/action-suggestion/ActionPage.jsx'
+import PausePage from './pages/pause/PausePage.jsx'
 import { ToastProvider } from './components/feedback/ToastProvider.jsx'
 import './styles/global.css'
 
@@ -11,6 +12,7 @@ import './styles/global.css'
 const pages = {
   'S-03': <NewGoalPage />,
   'S-04': <ActionPage />,
+  'S-05': <PausePage />,
 }
 
 /** 아직 안 만든 화면: 제목 + 화면 목록 (개발용) */

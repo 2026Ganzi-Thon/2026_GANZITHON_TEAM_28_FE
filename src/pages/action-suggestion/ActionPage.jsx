@@ -5,16 +5,13 @@ import { summaryTags } from '../../api/goalOptions.js'
 import { getGoal, markWrapUpOffered } from '../../api/goals.js'
 import { completeStep, pauseStep, requestNextStep, requestSmallerStep, retryStep } from '../../api/steps.js'
 import moonIcon from '../../assets/icons/moon.svg'
-import Button from '../../components/buttons/Button.jsx'
 import ConfirmModal from '../../components/dialogs/ConfirmModal.jsx'
 import AiLoading from '../../components/feedback/AiLoading.jsx'
-import Spinner from '../../components/feedback/Spinner.jsx'
+import StatusScreen from '../../components/feedback/StatusScreen.jsx'
 import { useToast } from '../../components/feedback/ToastProvider.jsx'
 import { useAiRequest } from '../../components/feedback/useAiRequest.js'
-import TopBar from '../../components/navigation/TopBar.jsx'
 import StepDoneView from './StepDoneView.jsx'
 import SuggestView from './SuggestView.jsx'
-import styles from './ActionPage.module.css'
 
 // S-04a 격려 토스트 (2.5초) 뒤에 S-04-3으로 넘어감
 const CELEBRATE_MS = 2500
@@ -116,7 +113,7 @@ export default function ActionPage() {
     setBusy('pause')
     try {
       await pauseStep(step.id)
-      navigate(`/goals/${goalId}/pause`)
+      navigate(`/goals/${goalId}/pause`, { replace: true })
     } catch {
       setBusy(null)
       setPauseOpen(false)
@@ -160,16 +157,7 @@ export default function ActionPage() {
 
   if (ai.state !== 'idle') return <AiLoading ai={ai} tags={aiTags} />
 
-  if (loadState === 'loading') {
-    return (
-      <div className={styles.status}>
-        <TopBar title="" onBack={goHome} />
-        <div className={styles.statusBody} role="status" aria-label="불러오는 중">
-          <Spinner />
-        </div>
-      </div>
-    )
-  }
+  if (loadState === 'loading') return <StatusScreen loading onBack={goHome} />
 
   const derived = loadState === 'ready' ? deriveView(data) : null
   if (!derived || derived.view === 'closed' || derived.view === 'error') {
@@ -179,18 +167,7 @@ export default function ActionPage() {
         : loadState === 'notFound'
           ? { title: '목표를 찾을 수 없어요', description: '홈에서 진행 중인 목표를 다시 골라 주세요.' }
           : { title: '목표를 불러오지 못했어요', description: '잠시 후 다시 시도해 주세요.' }
-    return (
-      <div className={styles.status}>
-        <TopBar title="" onBack={goHome} />
-        <div className={styles.statusBody}>
-          <p className={styles.statusTitle}>{message.title}</p>
-          <p className={styles.statusDescription}>{message.description}</p>
-        </div>
-        <div className={styles.statusActions}>
-          <Button onClick={goHome}>홈으로 가기</Button>
-        </div>
-      </div>
-    )
+    return <StatusScreen {...message} actionLabel="홈으로 가기" onAction={goHome} onBack={goHome} />
   }
 
   const { view, step, doneCount } = derived
