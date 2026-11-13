@@ -1,0 +1,95 @@
+/* 피그마 Feedback/Toast (node 47:976) 기준 */
+.container {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 8px);
+  left: 16px;
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.toast {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 480px;
+  padding: 14px 18px 14px 16px;
+  border-radius: 18px;
+  background-color: var(--color-text-primary);
+  box-shadow: var(--shadow-toast);
+  color: var(--color-inverse);
+  animation: enter 200ms ease-out;
+}
+
+.leaving {
+  animation: leave 250ms ease-in forwards;
+}
+
+.iconWrap {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: var(--color-inverse);
+}
+
+.iconWrapNotice {
+  background-color: var(--color-text-secondary);
+}
+
+.iconWrap > * {
+  width: 18px;
+  height: 18px;
+}
+
+.text {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.description {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: -0.26px;
+}
+
+@keyframes enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* 위로 페이드아웃 */
+@keyframes leave {
+  to {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .leaving {
+    animation-duration: 1ms;
+  }
+}

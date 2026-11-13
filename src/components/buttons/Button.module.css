@@ -1,0 +1,166 @@
+/* 피그마 Button 컴포넌트(node 4:19) 기준 */
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0 20px;
+  border: none;
+  border-radius: var(--radius-button);
+  font: inherit;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--duration-hover) ease-out,
+    box-shadow var(--duration-hover) ease-out,
+    border-color var(--duration-hover) ease-out,
+    transform var(--duration-pressed) ease-out;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
+/* ---------- Primary ---------- */
+.primary {
+  width: 100%;
+  height: var(--height-button);
+  background-color: var(--color-text-primary);
+  color: var(--color-inverse);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.32px;
+}
+
+/* ---------- Secondary ---------- */
+.secondary {
+  width: 100%;
+  height: var(--height-button);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.32px;
+}
+
+/* ---------- Text ---------- */
+.text {
+  height: var(--height-button-text);
+  background-color: transparent;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+  text-decoration: underline;
+}
+
+/* ---------- Hover: 마우스가 있는 기기에서만 (모바일 터치는 Hover 없음) ---------- */
+@media (hover: hover) {
+  .primary:not([aria-disabled]):hover {
+    background-color: var(--color-action-primary-hover);
+    box-shadow: var(--shadow-button-hover);
+  }
+
+  .secondary:not([aria-disabled]):hover {
+    background-color: var(--color-surface-muted);
+    box-shadow: var(--shadow-button-hover);
+  }
+
+  .text:not([aria-disabled]):hover {
+    background-color: var(--color-surface-muted);
+    color: var(--color-text-primary);
+  }
+}
+
+/* ---------- Pressed ---------- */
+.button:not([aria-disabled]):active {
+  transform: scale(0.98);
+  transition-duration: var(--duration-pressed);
+}
+
+.primary:not([aria-disabled]):active {
+  background-color: var(--color-action-primary-pressed);
+  box-shadow: var(--shadow-button-pressed);
+}
+
+.secondary:not([aria-disabled]):active {
+  background-color: var(--color-action-secondary-pressed);
+  border-color: var(--color-text-tertiary);
+  box-shadow: var(--shadow-button-pressed);
+}
+
+.text:not([aria-disabled]):active {
+  background-color: var(--color-action-secondary-pressed);
+  color: var(--color-text-primary);
+}
+
+/* ---------- Disabled ---------- */
+.disabled {
+  cursor: not-allowed;
+}
+
+.primary.disabled {
+  background-color: var(--color-action-disabled-bg);
+  color: var(--color-action-disabled-text);
+}
+
+.secondary.disabled {
+  border-color: var(--color-surface-muted);
+  color: var(--color-action-disabled-text);
+}
+
+.text.disabled {
+  color: var(--color-action-disabled-text);
+  text-decoration: none;
+}
+
+/* ---------- Loading: 배경은 Default와 동일, 탭만 막음 ---------- */
+.loading {
+  cursor: progress;
+}
+
+.labelHidden {
+  visibility: hidden;
+}
+
+/* 임시 스피너: 피그마 Spinner SVG를 아직 내려받지 못해 CSS로 대신함 */
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.secondary .spinner,
+.text .spinner {
+  color: var(--color-text-primary);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 2s;
+  }
+}

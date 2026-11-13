@@ -2,6 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { screens } from './pages/routes.js'
+import { ToastProvider } from './components/feedback/ToastProvider.jsx'
 import './styles/global.css'
 
 function App() {
@@ -29,7 +30,9 @@ function App() {
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <ToastProvider>
+        <App />
+      </ToastProvider>
     </BrowserRouter>
   </StrictMode>,
 )

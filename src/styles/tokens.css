@@ -1,0 +1,39 @@
+/*
+ * 1mm 디자인 토큰
+ * 출처: 피그마 컴포넌트 변수값 (Button 4:19, Toast 47:976, Modal 9:128 / 와이어프레임 v1)
+ * 비주얼 디자인 확정 전이라 값은 바뀔 수 있음. 이름은 피그마 변수 이름을 따름.
+ */
+:root {
+  /* 텍스트 */
+  --color-text-primary: #2b2a28;
+  --color-text-secondary: #6f6c66;
+  --color-text-tertiary: #a3a09a;
+  --color-inverse: #ffffff;
+
+  /* 표면 */
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2f1ee;
+  --color-bg: #fafaf8; /* 앱 배경 */
+  --color-border: #e4e2dd;
+
+  /* 액션 */
+  --color-action-primary-hover: #1c1b19;
+  --color-action-primary-pressed: #0e0e0d;
+  --color-action-secondary-pressed: #e7e5e0;
+  --color-action-disabled-bg: #e9e7e2;
+  --color-action-disabled-text: #b5b2ac;
+
+  /* 모양 */
+  --radius-button: 16px;
+  --height-button: 56px;
+  --height-button-text: 48px;
+
+  /* 효과 */
+  --shadow-button-hover: 0 4px 6px rgb(26 26 20 / 18%);
+  --shadow-button-pressed: inset 0 2px 4px rgb(0 0 0 / 28%);
+  --shadow-toast: 0 8px 12px rgb(26 26 20 / 18%);
+  --shadow-modal: 0 12px 20px rgb(26 26 20 / 12%);
+  --color-dim: rgb(43 42 40 / 48%); /* text-primary 48% */
+  --duration-hover: 150ms;
+  --duration-pressed: 80ms;
+}
