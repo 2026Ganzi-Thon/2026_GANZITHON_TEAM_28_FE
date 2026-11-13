@@ -1,0 +1,127 @@
+/* 피그마 S-04 AI 행동 제안 (node 6:62) 기준 */
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+/* 현재 목표 */
+.goal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 24px 0;
+}
+
+.goalLabel {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.24px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin: 0;
+  padding: 6px 14px 6px 12px;
+  border-radius: 999px;
+  background-color: var(--color-surface-muted);
+}
+
+.dot {
+  flex-shrink: 0;
+}
+
+.pillText {
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 제안 행동 */
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px 28px;
+  word-break: keep-all;
+}
+
+.label {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+}
+
+.action {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.38;
+  letter-spacing: -1.02px;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.32px;
+  white-space: pre-line;
+}
+
+.reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background-color: var(--color-surface-muted);
+}
+
+.reasonIcon {
+  flex-shrink: 0;
+}
+
+.reasonText {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.24px;
+}
+
+/* 하단 버튼 */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 24px max(26px, env(safe-area-inset-bottom));
+}
+
+.textButton {
+  width: 100%;
+}

@@ -1,26 +1,26 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { APP_CONFIG } from '../../api/config.js'
+import { BURDEN_OPTIONS, ENERGY_OPTIONS, summaryTags } from '../../api/goalOptions.js'
 import { createGoal } from '../../api/goals.js'
-import refreshIcon from '../../assets/icons/refresh.svg'
 import Button from '../../components/buttons/Button.jsx'
-import ConfirmModal from '../../components/dialogs/ConfirmModal.jsx'
+import AiLoading from '../../components/feedback/AiLoading.jsx'
+import { useAiRequest } from '../../components/feedback/useAiRequest.js'
 import Chip from '../../components/inputs/Chip.jsx'
 import FormErrorMessage from '../../components/inputs/FormErrorMessage.jsx'
 import TextArea from '../../components/inputs/TextArea.jsx'
 import TopBar from '../../components/navigation/TopBar.jsx'
-import AiLoading from './AiLoading.jsx'
-import { BURDEN_OPTIONS, ENERGY_OPTIONS, labelOf } from './options.js'
 import styles from './NewGoalPage.module.css'
 
 /**
  * S-03 목표 입력 화면
- * 화면 상태: 'form'(입력) → 'loading'(E-03, 8초 뒤 E-03a) → 성공 시 S-04로 이동
- *                                     └ 실패·15초 초과 → 'error'(E-04 모달, 입력 유지)
+ * 입력 → AI 로딩(E-03, 8초 뒤 E-03a) → 성공 시 S-04로 이동
+ *                └ 실패·15초 초과 → E-04 모달 (취소하면 입력 유지)
  * 버튼: 에너지·부담 칩을 둘 다 골라야 활성. 목표가 비어 있으면 누를 때 E-05 오류.
  */
 export default function NewGoalPage() {
   const navigate = useNavigate()
+  const ai = useAiRequest()
   const ids = { goal: useId(), goalError: useId(), energy: useId(), burden: useId() }
   const goalInputRef = useRef(null)
 
@@ -29,62 +29,17 @@ export default function NewGoalPage() {
   const [burden, setBurden] = useState(null)
   const [showGoalError, setShowGoalError] = useState(false)
 
-  const [phase, setPhase] = useState('form') // 'form' | 'loading' | 'error'
-  const [slow, setSlow] = useState(false)
-  const requestRef = useRef(null) // { controller, timers }
-
-  function stopRequest() {
-    const request = requestRef.current
-    if (!request) return
-    request.timers.forEach(clearTimeout)
-    request.controller.abort()
-    requestRef.current = null
-  }
-
-  // 화면을 떠나면 진행 중인 요청 정리
-  useEffect(() => stopRequest, [])
-
-  function startRequest() {
-    stopRequest()
-    setSlow(false)
-    setPhase('loading')
-
-    const controller = new AbortController()
-    const timers = [
-      setTimeout(() => setSlow(true), APP_CONFIG.aiLoadingSlowMs),
-      setTimeout(() => {
-        stopRequest()
-        setPhase('error')
-      }, APP_CONFIG.aiLoadingTimeoutMs),
-    ]
-    requestRef.current = { controller, timers }
-
-    createGoal({ title: goal.trim(), energy, burden }, { signal: controller.signal })
-      .then((created) => {
-        if (requestRef.current?.controller !== controller) return
-        timers.forEach(clearTimeout)
-        requestRef.current = null
-        navigate(`/goals/${created.id}/action`, { state: { goal: created } })
-      })
-      .catch(() => {
-        if (controller.signal.aborted) return
-        stopRequest()
-        setPhase('error')
-      })
-  }
-
-  function backToForm() {
-    stopRequest()
-    setPhase('form')
-  }
-
   function handleSubmit() {
     if (goal.trim() === '') {
       setShowGoalError(true)
       goalInputRef.current?.focus()
       return
     }
-    startRequest()
+    const input = { title: goal.trim(), energy, burden }
+    ai.run(
+      (signal) => createGoal(input, { signal }),
+      (created) => navigate(`/goals/${created.id}/action`, { replace: true }),
+    )
   }
 
   function handleGoalChange(next) {
@@ -98,29 +53,8 @@ export default function NewGoalPage() {
     else navigate('/')
   }
 
-  if (phase !== 'form') {
-    const tags = [
-      goal.trim(),
-      `에너지 · ${labelOf(ENERGY_OPTIONS, energy)}`,
-      `부담 · ${labelOf(BURDEN_OPTIONS, burden)}`,
-    ]
-    return (
-      <div className={styles.page}>
-        <AiLoading tags={tags} slow={slow} onCancel={backToForm} />
-        {/* E-04: 취소 → 입력 유지한 채 S-03 / 다시 시도 → 로딩 재개 */}
-        <ConfirmModal
-          open={phase === 'error'}
-          icon={<img src={refreshIcon} alt="" />}
-          title="앗, 행동을 가져오다 멈췄어요"
-          description={'다시 시도할까요?\n입력하신 내용은 그대로 남아 있어요.'}
-          secondaryLabel="취소"
-          primaryLabel="다시 시도"
-          onSecondary={backToForm}
-          onPrimary={startRequest}
-          onDismiss={backToForm}
-        />
-      </div>
-    )
+  if (ai.state !== 'idle') {
+    return <AiLoading ai={ai} tags={summaryTags({ title: goal.trim(), energy, burden })} />
   }
 
   return (

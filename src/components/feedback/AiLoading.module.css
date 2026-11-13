@@ -2,7 +2,9 @@
 .screen {
   display: flex;
   flex-direction: column;
+  max-width: 480px;
   min-height: 100dvh;
+  margin: 0 auto;
 }
 
 .center {

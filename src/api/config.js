@@ -6,4 +6,7 @@ export const APP_CONFIG = {
   goalMaxChars: 50, // 목표 입력 최대 글자 수
   aiLoadingSlowMs: 8000, // 이 시간이 지나면 로딩 문구 교체 (E-03a)
   aiLoadingTimeoutMs: 15000, // 이 시간이 지나면 오류 모달 (E-04)
+  stepExpireHours: 24, // pending 걸음이 이 시간 지나면 tried (paused 제외)
+  smallerMaxCount: 3, // 같은 걸음에서 [더 작게] 최대 횟수 → 넘으면 S-04-2
+  wrapUpMinSteps: 3, // 이만큼 done이면 AI 마무리 제안 (목표당 1번)
 }

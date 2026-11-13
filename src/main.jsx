@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { screens } from './pages/routes.js'
 import NewGoalPage from './pages/new-goal/NewGoalPage.jsx'
+import ActionPage from './pages/action-suggestion/ActionPage.jsx'
 import { ToastProvider } from './components/feedback/ToastProvider.jsx'
 import './styles/global.css'
 
 // 완성된 화면만 여기에 연결. 나머지는 임시 화면(Placeholder)으로 보여줌
 const pages = {
   'S-03': <NewGoalPage />,
+  'S-04': <ActionPage />,
 }
 
 /** 아직 안 만든 화면: 제목 + 화면 목록 (개발용) */
