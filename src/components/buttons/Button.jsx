@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react'
+import spinnerPrimary from '../../assets/icons/spinner-primary.svg'
+import spinnerSecondary from '../../assets/icons/spinner-secondary.svg'
+import spinnerText from '../../assets/icons/spinner-text.svg'
 import styles from './Button.module.css'
+
+// 피그마 Button Loading 상태(46:947 / 46:952 / 46:957)의 Spinner — variant마다 색이 다름
+const SPINNERS = {
+  primary: spinnerPrimary,
+  secondary: spinnerSecondary,
+  text: spinnerText,
+}
 
 // 버튼 Loading 노출 기준 (핸드오프 노트: 서버 설정값 기본 1초)
 const DEFAULT_LOADING_DELAY_MS = 1000
@@ -62,7 +72,14 @@ export default function Button({
       {...rest}
     >
       <span className={showSpinner ? styles.labelHidden : undefined}>{children}</span>
-      {showSpinner && <span className={styles.spinner} aria-hidden="true" />}
+      {showSpinner && (
+        <img
+          className={styles.spinner}
+          src={SPINNERS[variant] ?? spinnerPrimary}
+          alt=""
+          aria-hidden="true"
+        />
+      )}
     </button>
   )
 }

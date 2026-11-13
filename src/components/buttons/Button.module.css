@@ -129,7 +129,7 @@
   visibility: hidden;
 }
 
-/* 임시 스피너: 피그마 Spinner SVG를 아직 내려받지 못해 CSS로 대신함 */
+/* 피그마 Spinner SVG (src/assets/icons/spinner-*.svg)를 돌림 */
 .spinner {
   position: absolute;
   top: 50%;
@@ -137,16 +137,7 @@
   width: 20px;
   height: 20px;
   margin: -10px 0 0 -10px;
-  box-sizing: border-box;
-  border: 2px solid currentColor;
-  border-right-color: transparent;
-  border-radius: 50%;
   animation: spin 0.8s linear infinite;
-}
-
-.secondary .spinner,
-.text .spinner {
-  color: var(--color-text-primary);
 }
 
 @keyframes spin {

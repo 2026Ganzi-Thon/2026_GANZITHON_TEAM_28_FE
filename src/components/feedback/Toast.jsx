@@ -1,10 +1,12 @@
+import checkIcon from '../../assets/icons/check.svg'
+import infoIcon from '../../assets/icons/info.svg'
 import styles from './Toast.module.css'
 
-// TODO: 피그마 아이콘 SVG(icon/check, 정보 아이콘)를 받으면 여기에 연결
+// 피그마 Toast(47:976): Success·Simple은 icon/check, Notice는 정보 아이콘
 const TOAST_ICONS = {
-  success: null,
-  simple: null,
-  notice: null,
+  success: checkIcon,
+  simple: checkIcon,
+  notice: infoIcon,
 }
 
 /**
@@ -21,7 +23,8 @@ export default function Toast({ type = 'success', title, description, leaving = 
   return (
     <div className={classNames} role={type === 'notice' ? 'alert' : 'status'}>
       <div className={iconWrapClass} aria-hidden="true">
-        {TOAST_ICONS[type]}
+        <img src={TOAST_ICONS[type] ?? checkIcon} alt="" />
+
       </div>
       <div className={styles.text}>
         <p className={styles.title}>{title}</p>
