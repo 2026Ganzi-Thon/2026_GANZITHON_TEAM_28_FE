@@ -16,6 +16,9 @@
   --color-bg: #fafaf8; /* 앱 배경 */
   --color-border: #e4e2dd;
 
+  /* 피드백 */
+  --color-feedback-error: #b4492f; /* 폼 오류 (E-05) */
+
   /* 액션 */
   --color-action-primary-hover: #1c1b19;
   --color-action-primary-pressed: #0e0e0d;

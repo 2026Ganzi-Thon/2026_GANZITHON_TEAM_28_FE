@@ -1,0 +1,24 @@
+/* 피그마 Feedback/Spinner (node 12:200) 기준 */
+.spinner {
+  display: block;
+  flex-shrink: 0;
+  animation: spin 1.1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: blink 1.6s ease-in-out infinite;
+  }
+}

@@ -7,7 +7,8 @@ body {
   font-family: 'Noto Sans KR', system-ui, sans-serif;
 }
 
-main {
+/* 아직 안 만든 화면용 임시 레이아웃 (main.jsx의 Placeholder) */
+.placeholder {
   max-width: 32rem;
   margin-inline: auto;
   padding: 1.5rem;
