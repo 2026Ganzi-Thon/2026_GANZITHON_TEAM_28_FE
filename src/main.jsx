@@ -5,11 +5,14 @@ import { screens } from './pages/routes.js'
 import NewGoalPage from './pages/new-goal/NewGoalPage.jsx'
 import ActionPage from './pages/action-suggestion/ActionPage.jsx'
 import PausePage from './pages/pause/PausePage.jsx'
+import HomePage from './pages/home/HomePage.jsx'
 import { ToastProvider } from './components/feedback/ToastProvider.jsx'
+import ReconnectToast from './components/feedback/ReconnectToast.jsx'
 import './styles/global.css'
 
 // 완성된 화면만 여기에 연결. 나머지는 임시 화면(Placeholder)으로 보여줌
 const pages = {
+  'S-02': <HomePage />,
   'S-03': <NewGoalPage />,
   'S-04': <ActionPage />,
   'S-05': <PausePage />,
@@ -50,6 +53,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <ToastProvider>
+        <ReconnectToast />
         <App />
       </ToastProvider>
     </BrowserRouter>

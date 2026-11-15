@@ -24,6 +24,7 @@ export function addStep(db, goal, content) {
     smallestReached: false,
     createdAt: Date.now(),
     completedAt: null,
+    pausedAt: null,
   }
   db.steps.push(step)
   return step
@@ -71,6 +72,50 @@ export async function getGoal(goalId, { signal } = {}) {
     if (!goal || goal.status === 'deleted') throw new NotFoundError('목표를 찾을 수 없어요')
     const steps = db.steps.filter((step) => step.goalId === goalId)
     return { goal: { ...goal }, steps: steps.map((step) => ({ ...step })) }
+  })
+}
+
+/** 목표의 마지막 활동 시각 (홈 카드 정렬용) */
+function lastActivityAt(goal, steps) {
+  return Math.max(goal.createdAt, ...steps.map((step) => Math.max(step.createdAt, step.completedAt ?? 0, step.pausedAt ?? 0)))
+}
+
+/**
+ * 진행 중인(active) 목표 목록. 최근에 움직인 목표가 앞
+ * @returns {Promise<Array<{ goal: Goal, steps: Step[] }>>}
+ */
+export async function listGoals({ signal } = {}) {
+  await wait(MOCK_DELAY_MS, signal)
+  return updateDb((db) => {
+    expireSteps(db)
+    return db.goals
+      .filter((goal) => goal.status === 'active')
+      .map((goal) => {
+        const steps = db.steps.filter((step) => step.goalId === goal.id).map((step) => ({ ...step }))
+        return { goal: { ...goal }, steps, lastActivityAt: lastActivityAt(goal, steps) }
+      })
+      .sort((a, b) => b.lastActivityAt - a.lastActivityAt)
+      .map(({ goal, steps }) => ({ goal, steps }))
+  })
+}
+
+/** G-02 목표 이름 바꾸기 */
+export async function renameGoal(goalId, title, { signal } = {}) {
+  await wait(MOCK_DELAY_MS, signal)
+  updateDb((db) => {
+    const goal = db.goals.find((item) => item.id === goalId)
+    if (!goal) throw new NotFoundError('목표를 찾을 수 없어요')
+    goal.title = title
+  })
+}
+
+/** G-03 목표 지우기 — 목표만 deleted로, 걸음 기록은 남김 */
+export async function deleteGoal(goalId, { signal } = {}) {
+  await wait(MOCK_DELAY_MS, signal)
+  updateDb((db) => {
+    const goal = db.goals.find((item) => item.id === goalId)
+    if (!goal) throw new NotFoundError('목표를 찾을 수 없어요')
+    goal.status = 'deleted'
   })
 }
 

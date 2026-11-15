@@ -1,6 +1,7 @@
 import dotIcon from '../../assets/icons/dot.svg'
 import sparkleIcon from '../../assets/icons/sparkle.svg'
 import Button from '../../components/buttons/Button.jsx'
+import OfflineBanner from '../../components/feedback/OfflineBanner.jsx'
 import TopBar from '../../components/navigation/TopBar.jsx'
 import styles from './SuggestView.module.css'
 
@@ -16,12 +17,13 @@ const LABELS = {
  * - 버튼: 해봤어요(Primary) > 더 작게(Secondary) > 쉬어가기(Text)
  * - S-04-2에서는 [더 작게] 비활성
  */
-export default function SuggestView({ goal, step, doneCount, completing, onBack, onDone, onSmaller, onPause }) {
+export default function SuggestView({ goal, step, doneCount, offline, completing, onBack, onDone, onSmaller, onPause }) {
   const variant = step.smallestReached ? 'smallest' : step.smallerCount > 0 ? 'smaller' : 'default'
 
   return (
     <div className={styles.page}>
       <TopBar title={`${doneCount + 1}번째 걸음`} onBack={onBack} />
+      {offline && <OfflineBanner />}
 
       <div className={styles.goal}>
         <p className={styles.goalLabel}>현재 목표</p>

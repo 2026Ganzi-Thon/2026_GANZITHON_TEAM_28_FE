@@ -2,6 +2,7 @@ import { useId, useState } from 'react'
 import { ENERGY_CHANGE_OPTIONS, ENERGY_OPTIONS, shiftEnergy } from '../../api/goalOptions.js'
 import checkMutedIcon from '../../assets/icons/check-muted.svg'
 import Button from '../../components/buttons/Button.jsx'
+import OfflineBanner from '../../components/feedback/OfflineBanner.jsx'
 import Chip from '../../components/inputs/Chip.jsx'
 import TopBar from '../../components/navigation/TopBar.jsx'
 import styles from './StepDoneView.module.css'
@@ -17,6 +18,7 @@ export default function StepDoneView({
   goal,
   step,
   doneCount,
+  offline,
   retrying,
   onBack,
   onNext,
@@ -60,6 +62,7 @@ export default function StepDoneView({
   return (
     <div className={styles.page}>
       <TopBar title={content.topTitle} onBack={onBack} />
+      {offline && <OfflineBanner />}
 
       <div className={[styles.content, kind === 'resume' && styles.contentCompact].filter(Boolean).join(' ')}>
         <p className={styles.doneChip}>
@@ -85,7 +88,7 @@ export default function StepDoneView({
         </div>
 
         {kind !== 'wrapUp' && (
-          <section className={styles.energy} role="group" aria-labelledby={energyTitleId}>
+          <section className={styles.energy}>
             <div className={styles.question}>
               <h3 id={energyTitleId} className={styles.questionTitle}>
                 {kind === 'resume' ? '오늘 에너지는 어때요?' : '지금 에너지는 어때요?'}
@@ -96,7 +99,7 @@ export default function StepDoneView({
                   : '달라졌다면 다음 걸음의 크기를 맞춰드릴게요'}
               </p>
             </div>
-            <div className={styles.chips}>
+            <div className={styles.chips} role="radiogroup" aria-labelledby={energyTitleId}>
               {kind === 'resume'
                 ? ENERGY_OPTIONS.map((option) => (
                     <Chip

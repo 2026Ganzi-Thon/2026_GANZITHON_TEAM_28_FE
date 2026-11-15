@@ -33,7 +33,9 @@ export async function completeStep(stepId, { signal } = {}) {
 export async function pauseStep(stepId, { signal } = {}) {
   await wait(MOCK_DELAY_MS, signal)
   updateDb((db) => {
-    findStep(db, stepId).status = 'paused'
+    const step = findStep(db, stepId)
+    step.status = 'paused'
+    step.pausedAt = Date.now()
   })
 }
 

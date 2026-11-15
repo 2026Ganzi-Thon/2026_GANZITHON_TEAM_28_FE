@@ -10,6 +10,7 @@ import AiLoading from '../../components/feedback/AiLoading.jsx'
 import StatusScreen from '../../components/feedback/StatusScreen.jsx'
 import { useToast } from '../../components/feedback/ToastProvider.jsx'
 import { useAiRequest } from '../../components/feedback/useAiRequest.js'
+import { useOnlineStatus } from '../../components/feedback/useOnlineStatus.js'
 import StepDoneView from './StepDoneView.jsx'
 import SuggestView from './SuggestView.jsx'
 
@@ -39,6 +40,7 @@ export default function ActionPage() {
   const navigate = useNavigate()
   const showToast = useToast()
   const ai = useAiRequest()
+  const online = useOnlineStatus()
 
   const [data, setData] = useState(null) // { goal, steps }
   const [loadState, setLoadState] = useState('loading') // loading | ready | notFound | error
@@ -69,10 +71,16 @@ export default function ActionPage() {
   useEffect(() => () => clearTimeout(celebrateTimer.current), [])
 
   const goHome = () => navigate('/')
+
+  // S-04-3 '오늘은 여기까지' → 홈(S-02-2) + 토스트. 목표 상태는 바꾸지 않음
+  function goHomeForToday() {
+    navigate('/')
+    showToast({ type: 'success', title: '오늘도 1mm 움직였어요', description: '다음 걸음은 준비되면 언제든 받을 수 있어요' })
+  }
   const goEnd = () => navigate(`/goals/${goalId}/end`)
 
   function showSaveError() {
-    showToast({ type: 'notice', title: '저장하지 못했어요', description: '잠시 후 다시 시도해 주세요' })
+    showToast({ type: 'notice', title: '저장하지 못했어요. 잠시 후 다시 시도해 주세요' })
   }
 
   /** AI 요청 후 최신 목표 상태까지 받아서 화면 갱신 */
@@ -106,6 +114,11 @@ export default function ActionPage() {
 
   function handleSmaller(step) {
     if (busy) return
+    // O-03: AI가 필요한 동작은 오프라인이면 Notice 토스트로 안내
+    if (!online) {
+      showToast({ type: 'notice', title: '인터넷에 연결되면 더 작게 나눠드릴게요' })
+      return
+    }
     runAi(summaryTags(data.goal), (signal) => requestSmallerStep(step.id, { signal }))
   }
 
@@ -123,6 +136,11 @@ export default function ActionPage() {
 
   // ----- S-04-3 / S-04-3b -----
   function handleNext(energy) {
+    if (!online) {
+      // 피그마 T-01 '오프라인에서 AI 필요 동작'
+      showToast({ type: 'notice', title: '인터넷에 연결되면 다시 시도해 주세요' })
+      return
+    }
     runAi(summaryTags({ ...data.goal, energy }), (signal) => requestNextStep(goalId, { energy }, { signal }))
   }
 
@@ -180,6 +198,7 @@ export default function ActionPage() {
           goal={data.goal}
           step={step}
           doneCount={doneCount}
+          offline={!online}
           completing={busy === 'complete'}
           onBack={goHome}
           onDone={() => handleDone(step)}
@@ -210,11 +229,12 @@ export default function ActionPage() {
       goal={data.goal}
       step={step}
       doneCount={doneCount}
+      offline={!online}
       retrying={busy === 'retry'}
       onBack={goHome}
       onNext={handleNext}
       onRetry={() => handleRetry(step)}
-      onHome={goHome}
+      onHome={view === 'done' ? goHomeForToday : goHome}
       onEndGoal={goEnd}
       onWrapUpFinish={() => handleWrapUp(true)}
       onWrapUpMore={() => handleWrapUp(false)}
