@@ -1,0 +1,64 @@
+/* 피그마 List/HistoryItem (node 7:73) 기준 */
+.item {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  list-style: none;
+}
+
+.rail {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding-top: 6px;
+}
+
+.line {
+  flex: 1;
+  width: 1.5px;
+  min-height: 1px;
+  background-color: var(--color-border);
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding-bottom: 20px;
+  word-break: keep-all;
+}
+
+.meta {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.24px;
+}
+
+.action {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: -0.3px;
+  overflow-wrap: anywhere;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.24px;
+  white-space: nowrap;
+}

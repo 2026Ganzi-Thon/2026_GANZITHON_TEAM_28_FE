@@ -9,8 +9,9 @@ import { useDialogFocus } from './useDialogFocus.js'
  * - 딤을 누르거나 Esc를 누르면 onClose
  * - labelledBy: 시트 제목 요소의 id (스크린리더용) — 열리면 그 제목으로 포커스
  * - Tab은 시트 안에만, 닫히면 열었던 버튼으로 복귀
+ * - className: 시트 간격 등을 바꿀 때 (기본 간격 16)
  */
-export default function BottomSheet({ open, onClose, labelledBy, children }) {
+export default function BottomSheet({ open, onClose, labelledBy, className, children }) {
   const sheetRef = useRef(null)
   useDialogFocus(open, { containerRef: sheetRef, titleId: labelledBy, onDismiss: onClose })
 
@@ -21,7 +22,7 @@ export default function BottomSheet({ open, onClose, labelledBy, children }) {
       <div className={styles.dim} onClick={onClose} aria-hidden="true" />
       <div
         ref={sheetRef}
-        className={styles.sheet}
+        className={[styles.sheet, className].filter(Boolean).join(' ')}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}

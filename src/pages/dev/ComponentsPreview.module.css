@@ -1,0 +1,102 @@
+/* 개발용 미리보기 화면 — 배포 빌드에는 포함되지 않음 */
+.page {
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.intro {
+  margin: 0;
+  padding: 0 24px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.intro code {
+  font-size: 12px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 0 24px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.path {
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-bg);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+}
+
+.code {
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-muted);
+  color: var(--color-text-primary);
+  font-size: 11px;
+  line-height: 1.6;
+  white-space: pre;
+}
+
+.full {
+  width: 100%;
+}
+
+.sheetTitle {
+  margin: 0;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 700;
+}

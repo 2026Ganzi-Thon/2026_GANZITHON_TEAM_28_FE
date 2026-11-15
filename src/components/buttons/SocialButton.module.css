@@ -1,0 +1,61 @@
+/* 피그마 Button/Social (node 163:123) 기준 — 높이 56, 모서리 12, 로고 20 */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 56px;
+  margin: 0;
+  padding: 0 16px;
+  border: none;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.32px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--duration-pressed) ease-out;
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* 브랜드 가이드 고정색 */
+.kakao {
+  background-color: #fee500;
+  color: rgb(0 0 0 / 85%);
+}
+
+.apple {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.google {
+  border: 1px solid #747775;
+  background-color: #ffffff;
+  color: #1f1f1f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
+}
