@@ -21,7 +21,7 @@ export default function Toast({ type = 'success', title, description, leaving = 
     .join(' ')
 
   return (
-    <div className={classNames} role={type === 'notice' ? 'alert' : 'status'}>
+    <div className={classNames} role="status">
       <div className={iconWrapClass} aria-hidden="true">
         <img src={TOAST_ICONS[type] ?? checkIcon} alt="" />
 

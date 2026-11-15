@@ -11,7 +11,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 36px;
+  gap: 32px;
   padding: 12px 24px 24px;
 }
 
@@ -31,10 +31,10 @@
 .questionTitle {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  line-height: 1.4;
-  letter-spacing: -0.36px;
+  line-height: 1.45;
+  letter-spacing: -0.34px;
 }
 
 .questionHint {

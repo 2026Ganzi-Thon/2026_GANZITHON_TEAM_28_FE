@@ -12,6 +12,7 @@
   position: absolute;
   inset: 0;
   background-color: var(--color-dim);
+  animation: dim-in 200ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .modal {
@@ -26,7 +27,8 @@
   padding: 28px 20px 20px;
   border-radius: 24px;
   background-color: var(--color-surface);
-  box-shadow: var(--shadow-modal);
+  box-shadow: var(--shadow-high);
+  animation: modal-in 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .iconWrap {
@@ -57,18 +59,19 @@
 
 .title {
   margin: 0;
+  outline: none;
   color: var(--color-text-primary);
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.4;
-  letter-spacing: -0.38px;
+  letter-spacing: -0.4px;
 }
 
 .description {
   margin: 0;
   color: var(--color-text-secondary);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.5;
   letter-spacing: -0.28px;
   white-space: pre-line;
 }
@@ -80,9 +83,35 @@
   padding-top: 4px;
 }
 
-/* 모달 안 버튼은 높이 52, 가로로 반씩 */
+/* G-03 '지우기'처럼 되돌리기 어려운 선택은 오류 색 글자 */
+.actions .danger {
+  color: var(--color-action-destructive);
+}
+
+/* 모달 안 버튼은 가로로 반씩 (높이는 기본 버튼과 같은 최소 56) */
 .actions .action {
   flex: 1 0 0;
   min-width: 0;
-  height: 52px;
+}
+
+/* 모션 (피그마 Accessibility & Motion): 딤 200ms 페이드 + 카드 0.96→1 + 페이드 250ms */
+@keyframes dim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* 움직임 줄이기: 크기 변화 없이 150ms 페이드만 */
+@media (prefers-reduced-motion: reduce) {
+  .dim,
+  .modal {
+    animation: dim-in 150ms linear;
+  }
 }

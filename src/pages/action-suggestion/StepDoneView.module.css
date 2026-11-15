@@ -61,10 +61,10 @@
 .title {
   margin: 0;
   color: var(--color-text-primary);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 700;
-  line-height: 1.45;
-  letter-spacing: -0.52px;
+  line-height: 1.4;
+  letter-spacing: -0.56px;
   white-space: pre-line;
   overflow-wrap: anywhere;
 }
@@ -73,7 +73,7 @@
   margin: 0;
   color: var(--color-text-secondary);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.55;
   letter-spacing: -0.3px;
   white-space: pre-line;
 }
@@ -86,9 +86,9 @@
   gap: 10px;
   box-sizing: border-box;
   width: 100%;
-  padding: 16px 18px;
+  padding: 16px;
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
 }
 
@@ -107,7 +107,7 @@
   color: var(--color-text-primary);
   font-size: 15px;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 1.55;
   letter-spacing: -0.3px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -133,7 +133,6 @@
   font-weight: 500;
   line-height: 1.5;
   letter-spacing: -0.26px;
-  text-decoration: underline;
   cursor: pointer;
 }
 

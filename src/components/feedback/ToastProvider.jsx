@@ -8,7 +8,7 @@ const DURATION_MS = {
   simple: 2000,
   notice: 3500,
 }
-const LEAVE_ANIMATION_MS = 250
+const LEAVE_ANIMATION_MS = 200
 
 const ToastContext = createContext(null)
 

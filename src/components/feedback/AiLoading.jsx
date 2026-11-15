@@ -32,6 +32,7 @@ export default function AiLoading({ ai, tags }) {
     <div className={styles.screen}>
       <div className={styles.center}>
         <Spinner />
+        <span className={styles.srOnly}>걸음을 고르는 중이에요</span>
         <div className={styles.text} role="status">
           <p className={styles.title}>{message.title}</p>
           <p className={styles.description}>{message.description}</p>

@@ -17,16 +17,16 @@
   gap: 12px;
   width: 100%;
   max-width: 480px;
-  padding: 14px 18px 14px 16px;
-  border-radius: 18px;
-  background-color: var(--color-text-primary);
-  box-shadow: var(--shadow-toast);
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-action-primary);
+  box-shadow: var(--shadow-mid);
   color: var(--color-inverse);
-  animation: enter 200ms ease-out;
+  animation: enter 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .leaving {
-  animation: leave 250ms ease-in forwards;
+  animation: leave 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
 .iconWrap {
@@ -63,6 +63,7 @@
   margin: 0;
   font-size: 15px;
   font-weight: 700;
+  line-height: 1.55;
   letter-spacing: -0.3px;
 }
 
@@ -79,17 +80,25 @@
   }
 }
 
-/* 위로 페이드아웃 */
+/* 사라질 때: 200ms 페이드 (피그마 모션 규칙) */
 @keyframes leave {
   to {
     opacity: 0;
-    transform: translateY(-12px);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .toast,
+  .toast {
+    animation: fade-in 150ms linear;
+  }
+
   .leaving {
-    animation-duration: 1ms;
+    animation: leave 150ms linear forwards;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 }

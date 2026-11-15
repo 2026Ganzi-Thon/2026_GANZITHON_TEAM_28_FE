@@ -78,7 +78,7 @@
   font-size: 34px;
   font-weight: 700;
   line-height: 1.38;
-  letter-spacing: -1.02px;
+  letter-spacing: -0.68px;
   overflow-wrap: anywhere;
 }
 
@@ -86,7 +86,7 @@
   margin: 0;
   color: var(--color-text-secondary);
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
   letter-spacing: -0.32px;
   white-space: pre-line;
 }
@@ -96,7 +96,7 @@
   align-items: flex-start;
   gap: 8px;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background-color: var(--color-surface-muted);
 }
 
@@ -119,7 +119,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 16px 24px max(26px, env(safe-area-inset-bottom));
+  padding: 16px 24px max(24px, env(safe-area-inset-bottom));
 }
 
 .textButton {

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { getGoal } from '../../api/goals.js'
 import checkSavedIcon from '../../assets/icons/check-saved.svg'
-import moonLargeIcon from '../../assets/icons/moon-large.svg'
+import sproutRestIllustration from '../../assets/icons/illustration-sprout-rest.svg'
 import Button from '../../components/buttons/Button.jsx'
 import StatusScreen from '../../components/feedback/StatusScreen.jsx'
 import styles from './PausePage.module.css'
@@ -55,10 +55,8 @@ export default function PausePage() {
   return (
     <div className={styles.page}>
       <div className={styles.content}>
-        {/* 일러스트 자리 (실제 일러스트가 나오면 교체) */}
-        <div className={styles.illustration} aria-hidden="true">
-          <img src={moonLargeIcon} alt="" />
-        </div>
+        {/* 피그마 Illustration/Sprout-Rest — 장식용이라 스크린리더에서 읽지 않음 */}
+        <img className={styles.illustration} src={sproutRestIllustration} alt="" aria-hidden="true" />
 
         <div className={styles.message}>
           <h1 className={styles.title}>{'괜찮아요,\n오늘은 여기까지도 충분해요'}</h1>

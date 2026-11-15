@@ -19,6 +19,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .spinner {
-    animation: blink 1.6s ease-in-out infinite;
+    animation: blink 1.5s ease-in-out infinite;
   }
 }

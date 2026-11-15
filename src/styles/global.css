@@ -4,7 +4,8 @@ body {
   margin: 0;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
-  font-family: 'Noto Sans KR', system-ui, sans-serif;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* 아직 안 만든 화면용 임시 레이아웃 (main.jsx의 Placeholder) */
