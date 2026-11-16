@@ -1,0 +1,135 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+.content {
+  flex: 1;
+  padding: 24px 24px 0;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0 0 22px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.notices {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-muted);
+}
+
+.icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.noticeTitle {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: normal;
+}
+
+.consents {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+}
+
+.consentRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-right: 34px;
+}
+.consentRow label {
+  gap: 12px;
+}
+.consentRow label > span:last-child {
+  word-break: normal;
+}
+.notice:last-child .noticeTitle {
+  font-size: 15.7px;
+  white-space: nowrap;
+}
+
+.details {
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  min-width: 44px;
+  min-height: 44px;
+  transform: translateY(-50%);
+  border: 0;
+  background: none;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+@media (max-width: 380px) {
+  .notice:last-child .noticeTitle {
+    white-space: normal;
+  }
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 24px max(32px, env(safe-area-inset-bottom));
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+}
+.primaryButton {
+  font-weight: 400;
+}

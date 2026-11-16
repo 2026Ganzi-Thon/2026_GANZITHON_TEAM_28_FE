@@ -1,0 +1,106 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 24px;
+  padding: 12px 24px 24px;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  line-height: 23px;
+  letter-spacing: 0;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.summary div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.summary dt {
+  color: var(--color-text-secondary);
+}
+
+.summary dd {
+  margin: 0;
+}
+
+.reminder {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-muted);
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  line-height: 23px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reminder small {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.reminder img {
+  width: 20px;
+  height: 20px;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 24px max(22px, env(safe-area-inset-bottom));
+}
+
+.leaveButton {
+  color: #bd5c4e;
+  font-weight: 400;
+}
+
+.textButton {
+  font-weight: 400;
+}

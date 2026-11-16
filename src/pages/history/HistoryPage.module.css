@@ -1,0 +1,282 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  height: 100dvh;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  flex: 1;
+  min-height: 0;
+  padding: 8px 24px 0;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+.description {
+  display: block;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.garden {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.flower {
+  width: 52px;
+  height: 52px;
+}
+.gardenTitle {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+.chevron {
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+}
+
+.calendar {
+  flex-shrink: 0;
+  padding: 6px 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+}
+
+.weekHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.weekTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+}
+.arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: var(--radius-full);
+  background: none;
+  cursor: pointer;
+}
+.arrow img {
+  width: 20px;
+  height: 20px;
+}
+.arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.previous {
+  transform: rotate(180deg);
+}
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+.weekday {
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.dayButton {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.dayNumber {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid transparent;
+  border-radius: 50%;
+}
+.today .dayNumber {
+  border-color: var(--color-action-primary);
+}
+.selected .dayNumber {
+  background-color: var(--color-action-primary);
+  color: var(--color-inverse);
+}
+.dayButton:disabled {
+  color: var(--color-text-tertiary);
+  cursor: default;
+}
+.dot {
+  display: grid;
+  place-items: center;
+  min-height: 9px;
+  margin-top: -1px;
+}
+.dot[data-record='true']::before {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--color-text-secondary);
+  content: '';
+}
+.legend {
+  margin: 12px 4px 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.records {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.recordGroup {
+  flex-shrink: 0;
+}
+.recordArea {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+.scrollHint {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+.content > header {
+  flex-shrink: 0;
+}
+.emptyAll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+  text-align: center;
+}
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 14px;
+}
+.emptyAll h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+.emptyAll p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+.bottom {
+  padding: 16px 24px max(32px, env(safe-area-inset-bottom));
+}
+.primaryButton {
+  font-weight: 400;
+}
+.list li > div > p,
+.list li > div > span {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.dateHeading {
+  margin: 0 0 16px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.empty {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-muted);
+  font-size: 14px;
+}
+.empty p {
+  margin: 0 0 6px;
+}
+.empty span {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.gardenList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+}
+
+@media (max-width: 360px) {
+.content {
+  padding-inline: 16px;
+}
+.calendar {
+  padding-inline: 6px;
+}
+}

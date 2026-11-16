@@ -1,0 +1,125 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  padding: 64px 28px 24px;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.flower {
+  width: 158px;
+  height: 158px;
+}
+
+.title {
+  margin: 40px 0 12px;
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  margin: 28px 0 0;
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+  box-sizing: border-box;
+  min-height: 75px;
+  justify-content: center;
+  padding: 12px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+}
+
+.stats dt {
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.stats dd {
+  margin: 0;
+  font-size: 18px;
+  line-height: 25px;
+}
+
+.gardenLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-action-primary);
+  font: inherit;
+  font-size: 13px;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.gardenLink span {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.gardenLink img {
+  flex-shrink: 0;
+  width: 20px;
+  height: 25px;
+}
+
+.gardenLink .chevron {
+  width: 12px;
+  height: 20px;
+}
+
+.hint {
+  margin: 16px 0 0;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 24px max(22px, env(safe-area-inset-bottom));
+}
+
+.primaryButton,
+.textButton {
+  font-weight: 400;
+}

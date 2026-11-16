@@ -1,0 +1,153 @@
+.page {
+  --support-bg: #eef1fa;
+  --support-text: #2e3a66;
+  --support-action: #5f72b2;
+  display: flex;
+  flex-direction: column;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  background-color: var(--support-bg);
+  color: var(--support-text);
+}
+
+.content {
+  flex: 1;
+  padding: 48px 24px 24px;
+  word-break: keep-all;
+}
+
+.heart {
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 28px;
+}
+
+.title {
+  margin: 0 0 16px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+.description {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.link,
+.primaryLink {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 78px;
+  padding: 16px;
+  border: 1.5px solid #dce2f4;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: inherit;
+  text-decoration: none;
+}
+
+.primaryLink {
+  gap: 14px;
+  min-height: 90px;
+  padding: 20px;
+  border: 0;
+  border-radius: var(--radius-xl);
+  background-color: var(--support-action);
+  color: var(--color-inverse);
+}
+
+.phone {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+}
+
+.call {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.linkTitle {
+  display: block;
+  font-size: 15px;
+  line-height: 22.5px;
+  letter-spacing: 0;
+}
+
+.primaryLink .linkTitle {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.linkHint {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0;
+}
+
+.arrow {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+}
+
+.help {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.help img {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.help p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0;
+}
+
+.back {
+  min-height: 48px;
+  margin: 16px 24px max(16px, env(safe-area-inset-bottom));
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.back:focus-visible,
+.link:focus-visible,
+.primaryLink:focus-visible {
+  outline: 2px solid var(--support-action);
+  outline-offset: 4px;
+}

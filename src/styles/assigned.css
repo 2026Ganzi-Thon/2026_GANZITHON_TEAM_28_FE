@@ -1,0 +1,41 @@
+@font-face {
+  font-family: '1mm SVG Sans';
+  src: url('../assets/assigned/fonts/NotoSansKR-Regular.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* 원본 SVG의 글자 윤곽에 맞춘 담당 화면 전용 글꼴. */
+[data-assigned-page] {
+  font-family: '1mm SVG Sans', var(--font-family);
+  letter-spacing: -0.02em;
+}
+
+[data-assigned-page] :is(h1, h2, h3, p, span, label, input, button, dt, dd, time, small) {
+  letter-spacing: -0.02em;
+}
+
+[data-assigned-page] > header h1 {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+[data-assigned-page] input,
+[data-assigned-page] button {
+  letter-spacing: -0.02em;
+}
+
+[data-assigned-page] label span {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+body:has([data-assigned-page]) [role='dialog'] {
+  font-family: '1mm SVG Sans', var(--font-family);
+}
+
+body:has([data-assigned-page]) [role='dialog'] button {
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
