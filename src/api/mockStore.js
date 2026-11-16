@@ -34,6 +34,10 @@ export function updateDb(fn) {
   return result
 }
 
+export function readDb() {
+  return load()
+}
+
 export function nextId(db, prefix) {
   db.seq += 1
   return `${prefix}-${db.seq}`
@@ -52,6 +56,14 @@ export function wait(ms, signal) {
       reject(signal.reason ?? new DOMException('Aborted', 'AbortError'))
     })
   })
+}
+
+/** 동시에 진행할 수 있는 목표 수를 넘었을 때 (G-04) */
+export class GoalLimitError extends Error {
+  constructor(message = '진행 중인 목표가 너무 많아요') {
+    super(message)
+    this.name = 'GoalLimitError'
+  }
 }
 
 export class NotFoundError extends Error {

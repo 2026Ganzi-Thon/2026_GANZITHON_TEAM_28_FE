@@ -5,7 +5,7 @@
  */
 import { APP_CONFIG } from './config.js'
 import { suggestStep } from './mockAi.js'
-import { NotFoundError, nextId, updateDb, wait } from './mockStore.js'
+import { GoalLimitError, NotFoundError, nextId, readDb, updateDb, wait } from './mockStore.js'
 
 // mock 응답 지연. 8초·15초 상태를 확인하려면 잠깐 늘려서 테스트
 export const MOCK_AI_DELAY_MS = 2500
@@ -45,6 +45,10 @@ function expireSteps(db) {
 export async function createGoal({ title, energy, burden }, { signal } = {}) {
   await wait(MOCK_AI_DELAY_MS, signal)
   return updateDb((db) => {
+    // 서버에서도 막음: 주소로 S-03에 바로 들어와도 동시 목표 수를 넘지 않게
+    if (db.goals.filter((item) => item.status === 'active').length >= APP_CONFIG.maxActiveGoals) {
+      throw new GoalLimitError()
+    }
     const goal = {
       id: nextId(db, 'goal'),
       title,
@@ -73,6 +77,12 @@ export async function getGoal(goalId, { signal } = {}) {
     const steps = db.steps.filter((step) => step.goalId === goalId)
     return { goal: { ...goal }, steps: steps.map((step) => ({ ...step })) }
   })
+}
+
+/** 진행 중인(active) 목표 수 — S-03에서 G-04 안내를 띄울지 판단 */
+export async function countActiveGoals({ signal } = {}) {
+  await wait(MOCK_DELAY_MS, signal)
+  return readDb().goals.filter((goal) => goal.status === 'active').length
 }
 
 /** 목표의 마지막 활동 시각 (홈 카드 정렬용) */
