@@ -78,6 +78,7 @@
 
 .actions {
   display: flex;
+  flex-wrap: wrap; /* 글자가 커져 한 줄에 안 들어가면 버튼을 세로로 쌓음 (접근성 · 글자 크게 보기) */
   gap: 8px;
   width: 100%;
   padding-top: 4px;
@@ -88,10 +89,11 @@
   color: var(--color-action-destructive);
 }
 
-/* 모달 안 버튼은 가로로 반씩 (높이는 기본 버튼과 같은 최소 56) */
+/* 모달 안 버튼은 가로로 반씩 (높이는 기본 버튼과 같은 최소 56)
+   글자가 버튼 폭을 넘으면 min-width 때문에 줄이 바뀌고, 각 버튼이 한 줄을 다 씀 */
 .actions .action {
-  flex: 1 0 0;
-  min-width: 0;
+  flex: 1 1 calc(50% - 4px);
+  min-width: max-content;
 }
 
 /* 모션 (피그마 Accessibility & Motion): 딤 200ms 페이드 + 카드 0.96→1 + 페이드 250ms */

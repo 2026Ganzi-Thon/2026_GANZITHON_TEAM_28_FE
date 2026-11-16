@@ -3,7 +3,7 @@ import { ENERGY_CHANGE_OPTIONS, ENERGY_OPTIONS, shiftEnergy } from '../../api/go
 import checkMutedIcon from '../../assets/icons/check-muted.svg'
 import Button from '../../components/buttons/Button.jsx'
 import OfflineBanner from '../../components/feedback/OfflineBanner.jsx'
-import Chip from '../../components/inputs/Chip.jsx'
+import ChipGroup from '../../components/inputs/ChipGroup.jsx'
 import TopBar from '../../components/navigation/TopBar.jsx'
 import styles from './StepDoneView.module.css'
 
@@ -99,25 +99,16 @@ export default function StepDoneView({
                   : '달라졌다면 다음 걸음의 크기를 맞춰드릴게요'}
               </p>
             </div>
-            <div className={styles.chips} role="radiogroup" aria-labelledby={energyTitleId}>
-              {kind === 'resume'
-                ? ENERGY_OPTIONS.map((option) => (
-                    <Chip
-                      key={option.value}
-                      label={option.label}
-                      selected={energy === option.value}
-                      onClick={() => setEnergy(option.value)}
-                    />
-                  ))
-                : ENERGY_CHANGE_OPTIONS.map((option) => (
-                    <Chip
-                      key={option.value}
-                      label={option.label}
-                      selected={energyChange === option.value}
-                      onClick={() => setEnergyChange(option.value)}
-                    />
-                  ))}
-            </div>
+            {kind === 'resume' ? (
+              <ChipGroup labelledBy={energyTitleId} options={ENERGY_OPTIONS} value={energy} onChange={setEnergy} />
+            ) : (
+              <ChipGroup
+                labelledBy={energyTitleId}
+                options={ENERGY_CHANGE_OPTIONS}
+                value={energyChange}
+                onChange={setEnergyChange}
+              />
+            )}
           </section>
         )}
       </div>

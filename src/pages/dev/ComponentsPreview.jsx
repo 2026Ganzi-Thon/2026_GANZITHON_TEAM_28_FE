@@ -14,7 +14,7 @@ import OfflineBanner from '../../components/feedback/OfflineBanner.jsx'
 import Spinner from '../../components/feedback/Spinner.jsx'
 import { useToast } from '../../components/feedback/ToastProvider.jsx'
 import Checkbox from '../../components/inputs/Checkbox.jsx'
-import Chip from '../../components/inputs/Chip.jsx'
+import ChipGroup from '../../components/inputs/ChipGroup.jsx'
 import FormErrorMessage from '../../components/inputs/FormErrorMessage.jsx'
 import RadioCard from '../../components/inputs/RadioCard.jsx'
 import TextArea from '../../components/inputs/TextArea.jsx'
@@ -132,18 +132,22 @@ export default function ComponentsPreview() {
         <SocialButton provider="google" />
       </Section>
 
-      <Section title="Chip (단일 선택)" path="inputs/Chip.jsx" code={`<div role="radiogroup" aria-labelledby={질문제목id}>
-  <Chip label="조금 남아 있음" selected={v === 'low'} onClick={() => setV('low')} />
-</div>`}>
-        <div className={styles.row} role="radiogroup" aria-label="에너지 예시">
-          {[
-            ['drained', '완전히 방전됨'],
-            ['low', '조금 남아 있음'],
-            ['normal', '보통이에요'],
-          ].map(([value, label]) => (
-            <Chip key={value} label={label} selected={chip === value} onClick={() => setChip(value)} />
-          ))}
-        </div>
+      <Section title="ChipGroup (단일 선택 칩)" path="inputs/ChipGroup.jsx" code={`<h2 id={titleId}>지금 에너지는 어느 정도인가요?</h2>
+<ChipGroup labelledBy={titleId} options={[{ value: 'low', label: '조금 남아 있음' }, ...]}
+  value={v} onChange={setV} />   // 화살표 키로 이동·선택`}>
+        <span id="preview-chip-title" className={styles.row}>
+          에너지 예시 (Tab으로 들어와 화살표 키로 움직여 보세요)
+        </span>
+        <ChipGroup
+          labelledBy="preview-chip-title"
+          options={[
+            { value: 'drained', label: '완전히 방전됨' },
+            { value: 'low', label: '조금 남아 있음' },
+            { value: 'normal', label: '보통이에요' },
+          ]}
+          value={chip}
+          onChange={setChip}
+        />
       </Section>
 
       <Section title="TextArea · TextField · FormErrorMessage" path="inputs/" code={`<TextArea value={v} onChange={setV} maxChars={50} placeholder="..." error={hasError} />

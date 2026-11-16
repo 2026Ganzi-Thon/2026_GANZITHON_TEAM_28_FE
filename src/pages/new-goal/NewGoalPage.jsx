@@ -8,7 +8,7 @@ import AiLoading from '../../components/feedback/AiLoading.jsx'
 import OfflineBanner from '../../components/feedback/OfflineBanner.jsx'
 import { useAiRequest } from '../../components/feedback/useAiRequest.js'
 import { useOnlineStatus } from '../../components/feedback/useOnlineStatus.js'
-import Chip from '../../components/inputs/Chip.jsx'
+import ChipGroup from '../../components/inputs/ChipGroup.jsx'
 import FormErrorMessage from '../../components/inputs/FormErrorMessage.jsx'
 import TextArea from '../../components/inputs/TextArea.jsx'
 import TopBar from '../../components/navigation/TopBar.jsx'
@@ -132,16 +132,7 @@ function ChipQuestion({ id, title, hint, options, value, onChange }) {
         </h2>
         <p className={styles.questionHint}>{hint}</p>
       </div>
-      <div className={styles.chips} role="radiogroup" aria-labelledby={id}>
-        {options.map((option) => (
-          <Chip
-            key={option.value}
-            label={option.label}
-            selected={value === option.value}
-            onClick={() => onChange(option.value)}
-          />
-        ))}
-      </div>
+      <ChipGroup labelledBy={id} options={options} value={value} onChange={onChange} />
     </section>
   )
 }

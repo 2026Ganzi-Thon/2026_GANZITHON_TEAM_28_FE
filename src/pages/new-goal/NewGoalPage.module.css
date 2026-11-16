@@ -45,11 +45,6 @@
   letter-spacing: -0.26px;
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
 
 /* 하단 고정 CTA */
 .bottom {
