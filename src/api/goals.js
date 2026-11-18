@@ -1,139 +1,144 @@
 /**
- * 목표 관련 API
- * 지금은 mock(localStorage): 백엔드 API가 나오면 함수 안쪽만 실제 요청으로 바꾼다.
- * (API 기본 주소는 환경 변수로 분리할 예정)
+ * 목표 API (백엔드 /api/goals)
+ * 백엔드 구조: 진행 중(IN_PROGRESS) 목표는 항상 1개, 나머지는 쉬어가는 중(RESTING).
+ *   새 목표를 만들거나 쉬던 목표를 이어하면 기존 진행 중 목표는 자동으로 쉬어가기가 됨.
+ *   진행 중 + 쉬어가는 목표가 최대 개수(maxGoalCount)면 GOAL409_1.
+ * 화면에서 쓰기 쉽게 백엔드 응답(Detail)을 아래 모양으로 바꿔서 돌려줌:
+ *   { goal: { id, title, status, resting, energy, burden, energyLevel, burdenLevel, triedCount },
+ *     step: { id, action, description, reason, smallerCount, smallestReached, ... } | null,
+ *     doneCount, steps }
  */
-import { APP_CONFIG } from './config.js'
-import { suggestStep } from './mockAi.js'
-import { GoalLimitError, NotFoundError, nextId, readDb, updateDb, wait } from './mockStore.js'
+import { request } from './client.js'
+import { BURDEN_OPTIONS, ENERGY_OPTIONS, levelOf, valueOfLevel } from './goalOptions.js'
+import { recentRecordItems } from './records.js'
 
-// mock 응답 지연. 8초·15초 상태를 확인하려면 잠깐 늘려서 테스트
-export const MOCK_AI_DELAY_MS = 2500
-export const MOCK_DELAY_MS = 300
+// 백엔드 상태 → 화면 상태 (active·completed·released)
+const STATUS = { IN_PROGRESS: 'active', RESTING: 'active', COMPLETED: 'completed', STOPPED: 'released' }
 
-/** 걸음 하나를 만들어 db에 넣음 (mock 내부용) */
-export function addStep(db, goal, content) {
-  const step = {
-    id: nextId(db, 'step'),
-    goalId: goal.id,
-    action: content.action,
-    description: content.description,
-    reason: content.reason,
-    status: 'pending', // pending | done | paused | tried
-    smallerCount: 0,
-    smallestReached: false,
-    createdAt: Date.now(),
-    completedAt: null,
-    pausedAt: null,
+// 백엔드가 행동 설명을 주지 않아 피그마 문구로 보여줌 (S-04 / S-04-2)
+const DESCRIPTION_DEFAULT = '1분이면 충분해요.\n완벽하게 하지 않아도 괜찮아요.'
+const DESCRIPTION_SMALLEST = '이것도 버겁게 느껴진다면,\n오늘은 쉬어가는 것도 좋은 선택이에요.'
+
+/** 백엔드 Detail → 화면용 모양 */
+export function mapDetail(detail) {
+  const doneCount = detail.triedCount ?? 0
+  const current = detail.currentStep
+  return {
+    goal: {
+      id: String(detail.goalId),
+      title: detail.goalContent,
+      status: STATUS[detail.goalStatus] ?? 'active',
+      resting: detail.goalStatus === 'RESTING',
+      energyLevel: detail.energyLevel,
+      burdenLevel: detail.burdenLevel,
+      energy: valueOfLevel(ENERGY_OPTIONS, detail.energyLevel),
+      burden: valueOfLevel(BURDEN_OPTIONS, detail.burdenLevel),
+      triedCount: doneCount,
+    },
+    step: current
+      ? {
+          id: String(current.stepId),
+          action: current.content,
+          reason: current.reason,
+          description: current.canShrinkMore === false ? DESCRIPTION_SMALLEST : DESCRIPTION_DEFAULT,
+          sequence: current.sequence,
+          smallerCount: current.shrinkLevel ?? 0,
+          smallestReached: current.canShrinkMore === false,
+          isLastStep: Boolean(current.isLastStep),
+          energyLevel: current.energy,
+        }
+      : null,
+    doneCount,
+    // 강서현 화면(S-07 등)이 걸음 목록으로 '해봤어요' 수를 세서, 같은 수만큼 채워 둠
+    steps: Array.from({ length: doneCount }, () => ({ status: 'done' })),
   }
-  db.steps.push(step)
-  return step
-}
-
-/** 핸드오프 규칙: pending 걸음이 24시간 지나면 tried (paused는 제외) */
-function expireSteps(db) {
-  const limit = APP_CONFIG.stepExpireHours * 60 * 60 * 1000
-  db.steps.forEach((step) => {
-    if (step.status === 'pending' && Date.now() - step.createdAt > limit) step.status = 'tried'
-  })
 }
 
 /**
- * 새 목표를 만들고 AI 첫 걸음을 받는다 (S-03 → S-04)
- * @returns {Promise<Goal>}
+ * 홈(S-02): 진행 중 목표 1개(없으면 null) + 쉬어가는 목표 목록 + 개수
+ * @returns {Promise<{ inProgress: ReturnType<typeof mapDetail> | null, resting: Array, activeCount: number, maxCount: number }>}
+ */
+export async function getHome({ signal } = {}) {
+  const { result } = await request('/api/goals', { signal })
+  return {
+    inProgress: result.inProgressGoal ? mapDetail(result.inProgressGoal) : null,
+    resting: (result.restingGoals ?? []).map((item) => ({
+      goal: {
+        id: String(item.goalId),
+        title: item.content,
+        status: 'active',
+        resting: true,
+        triedCount: item.triedCount ?? 0,
+        restedAt: item.restedAt ? Date.parse(item.restedAt) : null,
+      },
+      step: null,
+      doneCount: item.triedCount ?? 0,
+    })),
+    activeCount: result.activeGoalCount ?? 0,
+    maxCount: result.maxGoalCount ?? 3,
+  }
+}
+
+/** S-03에서 G-04 안내를 띄울지: 진행 중 + 쉬어가는 목표 수와 최대 개수 */
+export async function getGoalLimit({ signal } = {}) {
+  const { activeCount, maxCount } = await getHome({ signal })
+  return { activeCount, maxCount }
+}
+
+/**
+ * 목표 생성(S-03) — AI 첫 걸음까지 응답 (몇 초 걸림)
+ * - 위기 신호면 목표를 저장하지 않고 { crisis: true } → S-08
+ * - 개수 초과면 ApiError(code GOAL409_1)
  */
 export async function createGoal({ title, energy, burden }, { signal } = {}) {
-  await wait(MOCK_AI_DELAY_MS, signal)
-  return updateDb((db) => {
-    // 서버에서도 막음: 주소로 S-03에 바로 들어와도 동시 목표 수를 넘지 않게
-    if (db.goals.filter((item) => item.status === 'active').length >= APP_CONFIG.maxActiveGoals) {
-      throw new GoalLimitError()
-    }
-    const goal = {
-      id: nextId(db, 'goal'),
-      title,
-      energy,
-      burden,
-      status: 'active', // active | completed | released | deleted
-      wrapUpOffered: false,
-      createdAt: Date.now(),
-    }
-    db.goals.push(goal)
-    addStep(db, goal, suggestStep(goal, 0))
-    return goal
+  const { result, code } = await request('/api/goals', {
+    method: 'POST',
+    body: { content: title, energyLevel: levelOf(ENERGY_OPTIONS, energy), burdenLevel: levelOf(BURDEN_OPTIONS, burden) },
+    signal,
   })
+  if (code === 'CRISIS200' || result?.isCrisis) return { crisis: true }
+  return mapDetail(result)
 }
 
 /**
- * 목표 하나와 그 걸음 목록 (오래된 순)
- * @returns {Promise<{ goal: Goal, steps: Step[] }>}
+ * 목표 상세(S-04 등). 마무리한 목표면 행동 기록에서 시작일·종료일·쉬어간 횟수를 채움 (C-01 통계용)
  */
 export async function getGoal(goalId, { signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  return updateDb((db) => {
-    expireSteps(db)
-    const goal = db.goals.find((item) => item.id === goalId)
-    if (!goal || goal.status === 'deleted') throw new NotFoundError('목표를 찾을 수 없어요')
-    const steps = db.steps.filter((step) => step.goalId === goalId)
-    return { goal: { ...goal }, steps: steps.map((step) => ({ ...step })) }
-  })
+  const { result } = await request(`/api/goals/${goalId}`, { signal })
+  const data = mapDetail(result)
+  if (data.goal.status !== 'active') await fillFinishedInfo(data, { signal })
+  return data
 }
 
-/** 진행 중인(active) 목표 수 — S-03에서 G-04 안내를 띄울지 판단 */
-export async function countActiveGoals({ signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  return readDb().goals.filter((goal) => goal.status === 'active').length
+async function fillFinishedInfo(data, { signal }) {
+  try {
+    const items = (await recentRecordItems({ signal })).filter((item) => String(item.goalId) === data.goal.id)
+    if (items.length === 0) return
+    const times = items.map((item) => Date.parse(item.createdAt)).sort((a, b) => a - b)
+    data.goal.createdAt = times[0]
+    data.goal.finishedAt = times.at(-1)
+    // 쉬어간 기록을 걸음 목록에 붙여 둠 (goalMetrics가 pausedAt으로 셈)
+    items
+      .filter((item) => item.type === 'REST')
+      .forEach((item) => data.steps.push({ status: 'paused', pausedAt: Date.parse(item.createdAt) }))
+  } catch {
+    // 통계를 못 채워도 화면은 보여줌
+  }
 }
 
-/** 목표의 마지막 활동 시각 (홈 카드 정렬용) */
-function lastActivityAt(goal, steps) {
-  return Math.max(goal.createdAt, ...steps.map((step) => Math.max(step.createdAt, step.completedAt ?? 0, step.pausedAt ?? 0)))
+/** 쉬던 목표 이어하기(S-02-1) — 기존 진행 중 목표는 자동으로 쉬어가기 */
+export async function resumeGoal(goalId, { signal } = {}) {
+  const { result } = await request(`/api/goals/${goalId}/resume`, { method: 'POST', signal })
+  return mapDetail(result)
 }
 
-/**
- * 진행 중인(active) 목표 목록. 최근에 움직인 목표가 앞
- * @returns {Promise<Array<{ goal: Goal, steps: Step[] }>>}
- */
-export async function listGoals({ signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  return updateDb((db) => {
-    expireSteps(db)
-    return db.goals
-      .filter((goal) => goal.status === 'active')
-      .map((goal) => {
-        const steps = db.steps.filter((step) => step.goalId === goal.id).map((step) => ({ ...step }))
-        return { goal: { ...goal }, steps, lastActivityAt: lastActivityAt(goal, steps) }
-      })
-      .sort((a, b) => b.lastActivityAt - a.lastActivityAt)
-      .map(({ goal, steps }) => ({ goal, steps }))
-  })
+/** 쉬어가기(S-04b → S-05) */
+export async function restGoal(goalId, { signal } = {}) {
+  await request(`/api/goals/${goalId}/rest`, { method: 'PATCH', signal })
 }
 
-/** G-02 목표 이름 바꾸기 */
-export async function renameGoal(goalId, title, { signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  updateDb((db) => {
-    const goal = db.goals.find((item) => item.id === goalId)
-    if (!goal) throw new NotFoundError('목표를 찾을 수 없어요')
-    goal.title = title
-  })
-}
-
-/** G-03 목표 지우기 — 목표만 deleted로, 걸음 기록은 남김 */
-export async function deleteGoal(goalId, { signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  updateDb((db) => {
-    const goal = db.goals.find((item) => item.id === goalId)
-    if (!goal) throw new NotFoundError('목표를 찾을 수 없어요')
-    goal.status = 'deleted'
-  })
-}
-
-/** AI 마무리 제안을 보여줬다고 기록 (목표당 1번만) */
-export async function markWrapUpOffered(goalId) {
-  await wait(MOCK_DELAY_MS)
-  updateDb((db) => {
-    const goal = db.goals.find((item) => item.id === goalId)
-    if (goal) goal.wrapUpOffered = true
-  })
+/** 목표 종료(S-07): type 'COMPLETED' | 'STOPPED' */
+export async function endGoal(goalId, type, { signal } = {}) {
+  const { result } = await request(`/api/goals/${goalId}/end`, { method: 'PATCH', body: { type }, signal })
+  return { id: String(result.goalId), status: STATUS[result.goalStatus] ?? 'active' }
 }

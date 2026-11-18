@@ -17,11 +17,6 @@
   word-break: keep-all;
 }
 
-/* S-04-3b는 간격이 조금 좁음 */
-.contentCompact {
-  gap: 24px;
-  padding-top: 16px;
-}
 
 /* 해봤어요 · 행동 */
 .doneChip {
@@ -184,9 +179,6 @@
   background-color: var(--color-bg);
 }
 
-.bottomCompact {
-  padding-bottom: max(20px, env(safe-area-inset-bottom));
-}
 
 .textButton {
   width: 100%;

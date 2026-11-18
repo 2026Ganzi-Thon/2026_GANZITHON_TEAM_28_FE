@@ -12,6 +12,7 @@ import styles from './GoalSheets.module.css'
 /**
  * G-01 목표 더보기 시트
  * 마무리 → S-07 / 이름 바꾸기 → G-02 시트 / 지우기 → G-03 확인 모달
+ * onRename·onDelete를 안 넘기면 그 줄은 숨김 (백엔드에 이름 변경·삭제 API가 아직 없음)
  */
 export function GoalActionsSheet({ summary, onClose, onEnd, onRename, onDelete }) {
   const titleId = useId()
@@ -39,7 +40,7 @@ export function GoalActionsSheet({ summary, onClose, onEnd, onRename, onDelete }
                 </span>
               </button>
             </li>
-            <li>
+            {onRename && (<li>
               <button type="button" className={styles.row} onClick={onRename}>
                 <span className={styles.rowIcon}>
                   <img src={pencilIcon} alt="" />
@@ -48,8 +49,8 @@ export function GoalActionsSheet({ summary, onClose, onEnd, onRename, onDelete }
                   <span className={styles.rowTitle}>목표 이름 바꾸기</span>
                 </span>
               </button>
-            </li>
-            <li>
+            </li>)}
+            {onDelete && (<li>
               <button type="button" className={styles.row} onClick={onDelete}>
                 <span className={styles.rowIcon}>
                   <img src={trashSmallIcon} alt="" />
@@ -59,7 +60,7 @@ export function GoalActionsSheet({ summary, onClose, onEnd, onRename, onDelete }
                   <span className={styles.rowDescription}>걸음 기록은 행동 기록에 그대로 남아요</span>
                 </span>
               </button>
-            </li>
+            </li>)}
           </ul>
 
           <Button variant="text" className={styles.fullWidth} onClick={onClose}>

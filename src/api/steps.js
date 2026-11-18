@@ -1,78 +1,31 @@
 /**
- * 걸음 관련 API
- * 지금은 mock(localStorage): 백엔드 API가 나오면 함수 안쪽만 실제 요청으로 바꾼다.
+ * 걸음 API (백엔드 /api/steps, /api/goals/{id}/next-step)
  */
-import { APP_CONFIG } from './config.js'
-import { MOCK_AI_DELAY_MS, MOCK_DELAY_MS, addStep } from './goals.js'
-import { suggestSmaller, suggestStep } from './mockAi.js'
-import { NotFoundError, updateDb, wait } from './mockStore.js'
+import { request } from './client.js'
+import { mapDetail } from './goals.js'
 
-function findStep(db, stepId) {
-  const step = db.steps.find((item) => item.id === stepId)
-  if (!step) throw new NotFoundError('걸음을 찾을 수 없어요')
-  return step
-}
-
-function findGoal(db, goalId) {
-  const goal = db.goals.find((item) => item.id === goalId)
-  if (!goal) throw new NotFoundError('목표를 찾을 수 없어요')
-  return goal
-}
-
-/** [해봤어요] 걸음을 done으로 */
-export async function completeStep(stepId, { signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  updateDb((db) => {
-    const step = findStep(db, stepId)
-    step.status = 'done'
-    step.completedAt = Date.now()
-  })
-}
-
-/** [쉬어가기] 걸음을 paused로 (목표 상태는 바꾸지 않음) */
-export async function pauseStep(stepId, { signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  updateDb((db) => {
-    const step = findStep(db, stepId)
-    step.status = 'paused'
-    step.pausedAt = Date.now()
-  })
-}
-
-/** [더 작게] 같은 걸음을 한 단계 더 쪼갬 (AI) */
-export async function requestSmallerStep(stepId, { signal } = {}) {
-  await wait(MOCK_AI_DELAY_MS, signal)
-  updateDb((db) => {
-    const step = findStep(db, stepId)
-    step.smallerCount += 1
-    const smaller = suggestSmaller(step.smallerCount)
-    step.action = smaller.action
-    step.description = smaller.description
-    step.reason = smaller.reason
-    step.smallestReached = smaller.lastOne || step.smallerCount >= APP_CONFIG.smallerMaxCount
-  })
+/**
+ * [해봤어요] 시도 기록 (AI 호출 없음)
+ * @returns {Promise<{ isLastStep: boolean, triedCount: number }>} isLastStep이면 마무리 제안(S-04-3a), 아니면 S-04-3
+ */
+export async function tryStep(stepId, { signal } = {}) {
+  const { result } = await request(`/api/steps/${stepId}/try`, { method: 'POST', signal })
+  return { isLastStep: Boolean(result?.isLastStep), triedCount: result?.triedCount ?? 0 }
 }
 
 /**
- * [다음 걸음 받기] / [새 걸음 받기] 새 걸음을 받음 (AI)
- * energy: 바뀐 에너지 값 (S-04-3은 shiftEnergy로 계산해서 넘김)
+ * [더 작게] 같은 걸음을 더 쉬운 행동으로 (AI) — 더 못 쪼개면 ApiError(code SHRINK409)
  */
-export async function requestNextStep(goalId, { energy }, { signal } = {}) {
-  await wait(MOCK_AI_DELAY_MS, signal)
-  updateDb((db) => {
-    const goal = findGoal(db, goalId)
-    goal.energy = energy
-    const stepCount = db.steps.filter((step) => step.goalId === goalId).length
-    addStep(db, goal, suggestStep(goal, stepCount))
-  })
+export async function shrinkStep(stepId, { signal } = {}) {
+  const { result } = await request(`/api/steps/${stepId}/shrink`, { method: 'POST', signal })
+  return mapDetail(result)
 }
 
-/** [어제 걸음 그대로 해보기] tried 걸음과 같은 행동을 새 걸음으로 */
-export async function retryStep(stepId, { signal } = {}) {
-  await wait(MOCK_DELAY_MS, signal)
-  updateDb((db) => {
-    const step = findStep(db, stepId)
-    const goal = findGoal(db, step.goalId)
-    addStep(db, goal, step)
-  })
+/**
+ * [다음 걸음 받기] 에너지를 다시 골라 다음 행동 (AI)
+ * energyLevel: 1~4, 목표를 만들 때 고른 값 ±1 안에서 (벗어나면 ENERGY400)
+ */
+export async function requestNextStep(goalId, energyLevel, { signal } = {}) {
+  const { result } = await request(`/api/goals/${goalId}/next-step`, { method: 'POST', body: { energy: energyLevel }, signal })
+  return mapDetail(result)
 }

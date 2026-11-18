@@ -1,6 +1,7 @@
 /**
  * 에너지·부담 선택지 (문구는 피그마 S-03 · S-04-3 기준)
- * value는 임시 키 — 백엔드와 API 값 이름을 맞추면 바꾼다.
+ * 백엔드는 1~4 숫자로 주고받음 — 배열 순서 그대로 1부터 (levelOf / valueOfLevel로 변환)
+ *   에너지: 1=완전히 방전됨 … 4=꽤 괜찮아요 / 부담: 1=너무 막막해요 … 4=해볼 만해요
  */
 export const ENERGY_OPTIONS = [
   { value: 'drained', label: '완전히 방전됨' },
@@ -25,6 +26,16 @@ export const ENERGY_CHANGE_OPTIONS = [
 
 export function labelOf(options, value) {
   return options.find((option) => option.value === value)?.label ?? ''
+}
+
+/** 화면 값 → 백엔드 숫자(1~4) */
+export function levelOf(options, value) {
+  return options.findIndex((option) => option.value === value) + 1
+}
+
+/** 백엔드 숫자(1~4) → 화면 값 */
+export function valueOfLevel(options, level) {
+  return options[level - 1]?.value ?? null
 }
 
 /** 에너지 변화(same/up/down)를 반영한 새 에너지 값 */

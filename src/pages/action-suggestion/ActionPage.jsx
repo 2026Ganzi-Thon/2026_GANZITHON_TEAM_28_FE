@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { APP_CONFIG } from '../../api/config.js'
-import { summaryTags } from '../../api/goalOptions.js'
-import { getGoal, markWrapUpOffered } from '../../api/goals.js'
-import { completeStep, pauseStep, requestNextStep, requestSmallerStep, retryStep } from '../../api/steps.js'
+import { ENERGY_OPTIONS, levelOf, summaryTags } from '../../api/goalOptions.js'
+import { getGoal, restGoal, resumeGoal } from '../../api/goals.js'
+import { requestNextStep, shrinkStep, tryStep } from '../../api/steps.js'
 import moonIcon from '../../assets/icons/moon.svg'
 import ConfirmModal from '../../components/dialogs/ConfirmModal.jsx'
 import AiLoading from '../../components/feedback/AiLoading.jsx'
@@ -17,24 +16,16 @@ import SuggestView from './SuggestView.jsx'
 // S-04a 격려 토스트 (2.5초) 뒤에 S-04-3으로 넘어감
 const CELEBRATE_MS = 2500
 
-/**
- * 목표·걸음 상태로 보여줄 화면을 고름 (홈 카드 L-01도 이 주소로만 보내면 됨)
- * - pending·paused 걸음 → S-04 (더 작게 횟수에 따라 S-04-1 / S-04-2)
- * - tried 걸음 → S-04-3b
- * - 마지막 걸음이 done → S-04-3, 조건이 맞으면 S-04-3a
- */
-function deriveView({ goal, steps }) {
-  const current = steps.at(-1)
-  const doneCount = steps.filter((step) => step.status === 'done').length
-  if (goal.status !== 'active') return { view: 'closed', doneCount }
-  if (!current) return { view: 'error', doneCount }
-  if (current.status === 'pending' || current.status === 'paused') return { view: 'suggest', step: current, doneCount }
-  if (current.status === 'tried') return { view: 'resume', step: current, doneCount }
-  if (doneCount >= APP_CONFIG.wrapUpMinSteps && !goal.wrapUpOffered) return { view: 'wrapUp', step: current, doneCount }
-  return { view: 'done', step: current, doneCount }
-}
+const SAVE_FAILED = '저장하지 못했어요. 잠시 후 다시 시도해 주세요'
+const OFFLINE = '인터넷에 연결되면 다시 시도해 주세요'
 
-/** S-04 AI 행동 제안 화면 묶음 (/goals/:goalId/action) */
+/**
+ * S-04 AI 행동 제안 화면 묶음 (/goals/:goalId/action) — 백엔드 목표 상세로 화면을 고름
+ * - 지금 걸음(currentStep)이 있으면 S-04 (더 작게 했으면 S-04-1, 더 못 쪼개면 S-04-2)
+ * - 지금 걸음이 없으면 '오늘은 여기까지' 상태 → S-04-3
+ * - [해봤어요] 응답이 isLastStep이면 S-04-3a 마무리 제안
+ * - 쉬어가는 목표로 들어오면 이어하기(resume) 후 보여줌 (기존 진행 중 목표는 백엔드가 자동으로 쉬어가기)
+ */
 export default function ActionPage() {
   const { goalId } = useParams()
   const navigate = useNavigate()
@@ -42,21 +33,25 @@ export default function ActionPage() {
   const ai = useAiRequest()
   const online = useOnlineStatus()
 
-  const [data, setData] = useState(null) // { goal, steps }
+  const [data, setData] = useState(null) // { goal, step, doneCount }
   const [loadState, setLoadState] = useState('loading') // loading | ready | notFound | error
-  const [busy, setBusy] = useState(null) // 'complete' | 'celebrate' | 'pause' | 'retry' | 'wrapUp'
+  const [busy, setBusy] = useState(null) // 'complete' | 'celebrate' | 'pause'
   const [pauseOpen, setPauseOpen] = useState(false)
   const [aiTags, setAiTags] = useState([])
+  const [lastAction, setLastAction] = useState(null) // 방금 해본 행동 (S-04-3 칩)
+  const [wrapUp, setWrapUp] = useState(false) // S-04-3a 마무리 제안
   const celebrateTimer = useRef(null)
 
   const load = useCallback(
     async (signal) => {
       try {
-        setData(await getGoal(goalId, { signal }))
+        let next = await getGoal(goalId, { signal })
+        if (next.goal.resting) next = await resumeGoal(goalId, { signal })
+        setData(next)
         setLoadState('ready')
       } catch (error) {
         if (signal?.aborted) return
-        setLoadState(error.name === 'NotFoundError' ? 'notFound' : 'error')
+        setLoadState(error.name === 'NotFoundError' || error.status === 404 ? 'notFound' : 'error')
       }
     },
     [goalId],
@@ -71,43 +66,37 @@ export default function ActionPage() {
   useEffect(() => () => clearTimeout(celebrateTimer.current), [])
 
   const goHome = () => navigate('/')
+  const goEnd = () => navigate(`/goals/${goalId}/end`)
 
   // S-04-3 '오늘은 여기까지' → 홈(S-02-2) + 토스트. 목표 상태는 바꾸지 않음
   function goHomeForToday() {
     navigate('/')
     showToast({ type: 'success', title: '오늘도 1mm 움직였어요', description: '다음 걸음은 준비되면 언제든 받을 수 있어요' })
   }
-  const goEnd = () => navigate(`/goals/${goalId}/end`)
-
-  function showSaveError() {
-    showToast({ type: 'notice', title: '저장하지 못했어요. 잠시 후 다시 시도해 주세요' })
-  }
-
-  /** AI 요청 후 최신 목표 상태까지 받아서 화면 갱신 */
-  function runAi(tags, request) {
-    setAiTags(tags)
-    ai.run(
-      (signal) => request(signal).then(() => getGoal(goalId, { signal })),
-      (next) => setData(next),
-    )
-  }
 
   // ----- S-04 -----
   async function handleDone(step) {
     if (busy) return
-    setBusy('complete')
-    try {
-      await completeStep(step.id)
-    } catch {
-      setBusy(null)
-      showSaveError()
+    if (!online) {
+      showToast({ type: 'notice', title: OFFLINE })
       return
     }
-    // S-04a: 토스트 2.5초 동안 S-04에 머문 뒤 S-04-3으로
+    setBusy('complete')
+    let tried
+    try {
+      tried = await tryStep(step.id)
+    } catch {
+      setBusy(null)
+      showToast({ type: 'notice', title: SAVE_FAILED })
+      return
+    }
+    // S-04a: 토스트 2.5초 동안 S-04에 머문 뒤 S-04-3(또는 S-04-3a)으로
     setBusy('celebrate')
     showToast({ type: 'success', title: '작은 시작을 해낸 것을 축하해요!', description: '1mm 움직인 오늘의 나, 정말 멋져요' })
-    celebrateTimer.current = setTimeout(async () => {
-      await load()
+    celebrateTimer.current = setTimeout(() => {
+      setLastAction(step.action)
+      setWrapUp(tried.isLastStep)
+      setData((current) => ({ ...current, step: null, doneCount: tried.triedCount, goal: { ...current.goal, triedCount: tried.triedCount } }))
       setBusy(null)
     }, CELEBRATE_MS)
   }
@@ -119,68 +108,58 @@ export default function ActionPage() {
       showToast({ type: 'notice', title: '인터넷에 연결되면 더 작게 나눠드릴게요' })
       return
     }
-    runAi(summaryTags(data.goal), (signal) => requestSmallerStep(step.id, { signal }))
+    setAiTags(summaryTags(data.goal))
+    ai.run(
+      (signal) =>
+        shrinkStep(step.id, { signal }).catch((error) => {
+          // 더 못 쪼개는 행동이면 오류 대신 S-04-2로
+          if (error.code === 'SHRINK409') return { ...data, step: { ...step, smallestReached: true } }
+          throw error
+        }),
+      (next) => setData(next),
+    )
   }
 
-  async function handlePauseConfirm(step) {
+  async function handlePauseConfirm() {
+    if (!online) {
+      setPauseOpen(false)
+      showToast({ type: 'notice', title: OFFLINE })
+      return
+    }
     setBusy('pause')
     try {
-      await pauseStep(step.id)
+      await restGoal(goalId)
       navigate(`/goals/${goalId}/pause`, { replace: true })
     } catch {
       setBusy(null)
       setPauseOpen(false)
-      showSaveError()
+      showToast({ type: 'notice', title: SAVE_FAILED })
     }
   }
 
-  // ----- S-04-3 / S-04-3b -----
+  // ----- S-04-3 -----
   function handleNext(energy) {
     if (!online) {
-      // 피그마 T-01 '오프라인에서 AI 필요 동작'
-      showToast({ type: 'notice', title: '인터넷에 연결되면 다시 시도해 주세요' })
+      showToast({ type: 'notice', title: OFFLINE })
       return
     }
-    runAi(summaryTags({ ...data.goal, energy }), (signal) => requestNextStep(goalId, { energy }, { signal }))
-  }
-
-  async function handleRetry(step) {
-    if (busy) return
-    setBusy('retry')
-    try {
-      await retryStep(step.id)
-      await load()
-    } catch {
-      showSaveError()
-    }
-    setBusy(null)
-  }
-
-  // ----- S-04-3a: 목표당 1번만 -----
-  async function handleWrapUp(finish) {
-    if (busy) return
-    setBusy('wrapUp')
-    try {
-      await markWrapUpOffered(goalId)
-    } catch {
-      // 기록에 실패해도 사용자의 선택은 그대로 진행
-    }
-    if (finish) {
-      goEnd()
-      return
-    }
-    await load()
-    setBusy(null)
+    setAiTags(summaryTags({ ...data.goal, energy }))
+    ai.run(
+      (signal) => requestNextStep(goalId, levelOf(ENERGY_OPTIONS, energy), { signal }),
+      (next) => {
+        setWrapUp(false)
+        setData(next)
+      },
+    )
   }
 
   if (ai.state !== 'idle') return <AiLoading ai={ai} tags={aiTags} />
 
   if (loadState === 'loading') return <StatusScreen loading onBack={goHome} />
 
-  const derived = loadState === 'ready' ? deriveView(data) : null
-  if (!derived || derived.view === 'closed' || derived.view === 'error') {
+  if (loadState !== 'ready' || data.goal.status !== 'active') {
     const message =
-      derived?.view === 'closed'
+      loadState === 'ready'
         ? { title: '이미 마무리한 목표예요', description: '홈에서 다른 목표를 이어가거나 새로 시작할 수 있어요.' }
         : loadState === 'notFound'
           ? { title: '목표를 찾을 수 없어요', description: '홈에서 진행 중인 목표를 다시 골라 주세요.' }
@@ -188,9 +167,9 @@ export default function ActionPage() {
     return <StatusScreen {...message} actionLabel="홈으로 가기" onAction={goHome} onBack={goHome} />
   }
 
-  const { view, step, doneCount } = derived
+  const { step, doneCount } = data
 
-  if (view === 'suggest') {
+  if (step) {
     return (
       <>
         <SuggestView
@@ -214,7 +193,7 @@ export default function ActionPage() {
           secondaryLabel="계속하기"
           primaryLabel="쉬어가기"
           onSecondary={() => setPauseOpen(false)}
-          onPrimary={() => handlePauseConfirm(step)}
+          onPrimary={handlePauseConfirm}
           onDismiss={() => busy !== 'pause' && setPauseOpen(false)}
           primaryLoading={busy === 'pause'}
         />
@@ -222,22 +201,21 @@ export default function ActionPage() {
     )
   }
 
+  const kind = wrapUp ? 'wrapUp' : 'done'
   return (
     <StepDoneView
-      key={`${view}-${step.id}`}
-      kind={view}
+      key={kind}
+      kind={kind}
       goal={data.goal}
-      step={step}
+      lastAction={lastAction}
       doneCount={doneCount}
       offline={!online}
-      retrying={busy === 'retry'}
       onBack={goHome}
       onNext={handleNext}
-      onRetry={() => handleRetry(step)}
-      onHome={view === 'done' ? goHomeForToday : goHome}
+      onHome={goHomeForToday}
       onEndGoal={goEnd}
-      onWrapUpFinish={() => handleWrapUp(true)}
-      onWrapUpMore={() => handleWrapUp(false)}
+      onWrapUpFinish={goEnd}
+      onWrapUpMore={() => setWrapUp(false)}
     />
   )
 }

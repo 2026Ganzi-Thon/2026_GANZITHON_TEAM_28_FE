@@ -1,4 +1,3 @@
-import { listGoals } from './goals.js'
 import { readDb } from './mockStore.js'
 
 const SEASONS = ['봄', '여름', '가을', '겨울']
@@ -15,8 +14,8 @@ export function seasonLabel(key) {
   return `${year} ${SEASONS[Number(season)]} 정원`
 }
 
-export async function getGarden({ signal } = {}) {
-  await listGoals({ signal })
+/** 정원(S-10)은 구현하지 않음 — 백엔드 API가 없어 기기 mock 저장소를 그대로 읽음 */
+export async function getGarden() {
   const db = readDb()
   return db.goals.filter((goal) => goal.status !== 'deleted').map((goal) => ({
     goal,

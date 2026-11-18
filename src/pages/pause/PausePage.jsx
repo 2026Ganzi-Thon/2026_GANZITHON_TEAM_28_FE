@@ -9,9 +9,9 @@ import styles from './PausePage.module.css'
 
 /**
  * S-05 쉬어가기 (/goals/:goalId/pause)
- * - S-04b에서 [쉬어가기]로 걸음을 paused로 저장한 뒤 들어오는 화면
- * - 마지막 걸음이 쉬어가는 중이 아니면 S-04로 보냄
- * - 목표 상태는 바꾸지 않음 (핸드오프 규칙)
+ * - S-04b에서 [쉬어가기]로 목표를 쉬어가는 중(RESTING)으로 바꾼 뒤 들어오는 화면
+ * - 쉬어가는 중이 아니면 S-04로 보냄
+ * - 카드에는 멈춘 걸음(currentStep)과 몇 번째 걸음인지 보여줌
  */
 export default function PausePage() {
   const { goalId } = useParams()
@@ -47,10 +47,9 @@ export default function PausePage() {
     return <StatusScreen {...message} actionLabel="홈으로 가기" onAction={goHome} />
   }
 
-  const step = data.steps.at(-1)
-  if (step?.status !== 'paused') return <Navigate to={`/goals/${goalId}/action`} replace />
+  if (!data.goal.resting) return <Navigate to={`/goals/${goalId}/action`} replace />
 
-  const doneCount = data.steps.filter((item) => item.status === 'done').length
+  const { step, doneCount } = data
 
   return (
     <div className={styles.page}>
@@ -69,7 +68,7 @@ export default function PausePage() {
           </span>
           <div className={styles.cardText}>
             <p className={styles.cardMeta}>저장된 걸음 · {data.goal.title}</p>
-            <p className={styles.cardAction}>{step.action}</p>
+            <p className={styles.cardAction}>{step?.action ?? '다음 걸음은 이어할 때 받아요'}</p>
             <p className={styles.cardSub}>{doneCount + 1}번째 걸음에서 쉬어가는 중이에요</p>
           </div>
         </div>

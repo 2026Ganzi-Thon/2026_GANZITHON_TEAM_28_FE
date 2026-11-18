@@ -1,22 +1,14 @@
-import { MOCK_DELAY_MS } from './goals.js'
-import { NotFoundError, updateDb, wait } from './mockStore.js'
+import { request } from './client.js'
+import { endGoal } from './goals.js'
 
-/** 같은 마무리 요청은 기존 결과를 보존한다. */
+const END_TYPE = { completed: 'COMPLETED', released: 'STOPPED' }
+
+/** S-07 목표 마무리 — 백엔드 PATCH /api/goals/:id/end. 화면 토스트에 쓰도록 목표 이름도 돌려줌 */
 export async function finishGoal(goalId, status, { signal } = {}) {
-  if (!['completed', 'released'].includes(status)) throw new Error('마무리 방법을 골라 주세요')
-  await wait(MOCK_DELAY_MS, signal)
-  return updateDb((db) => {
-    const goal = db.goals.find((item) => item.id === goalId)
-    if (!goal || goal.status === 'deleted') throw new NotFoundError('목표를 찾을 수 없어요')
-    if (goal.status !== 'active') return { ...goal }
-    goal.status = status
-    goal.finishedAt = Date.now()
-    db.steps.filter((step) => step.goalId === goalId && step.status === 'pending').forEach((step) => {
-      step.status = 'tried'
-      step.triedAt = goal.finishedAt
-    })
-    return { ...goal }
-  })
+  if (!END_TYPE[status]) throw new Error('마무리 방법을 골라 주세요')
+  const { result } = await request(`/api/goals/${goalId}`, { signal })
+  const ended = await endGoal(goalId, END_TYPE[status], { signal })
+  return { ...ended, title: result.goalContent }
 }
 
 export function goalMetrics(goal, steps) {
