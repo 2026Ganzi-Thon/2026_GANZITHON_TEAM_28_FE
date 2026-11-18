@@ -1,0 +1,16 @@
+@import './tokens.css';
+
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 아직 안 만든 화면용 임시 레이아웃 (main.jsx의 Placeholder) */
+.placeholder {
+  max-width: 32rem;
+  margin-inline: auto;
+  padding: 1.5rem;
+}

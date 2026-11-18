@@ -1,0 +1,256 @@
+.page {
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+.content {
+  padding: 12px 24px 40px;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 34px;
+  letter-spacing: 0;
+  white-space: pre-line;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.season {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 24px 0 12px;
+  font-size: 15px;
+}
+
+.season button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+}
+
+.season button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.season img {
+  width: 20px;
+  height: 20px;
+}
+
+.previous {
+  transform: rotate(180deg);
+}
+
+.board {
+  position: relative;
+  height: 300px;
+  border-radius: var(--radius-xl);
+  background-color: #e6eee9;
+}
+
+.plant {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.plant:disabled {
+  cursor: default;
+}
+
+.plant img {
+  max-width: 36px;
+  max-height: 56px;
+}
+
+.soil {
+  position: absolute;
+  width: 20px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: var(--color-surface-muted);
+  transform: translate(-50%, -50%);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.legend span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  font-size: 10px;
+  line-height: 16px;
+}
+
+.legend img {
+  width: 16px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.archiveLink {
+  display: block;
+  min-height: 44px;
+  margin: 12px auto 0;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-action-primary);
+  font: inherit;
+  font-size: 13px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.hint {
+  margin: 16px 0 0;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.sheet {
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.detailArt {
+  width: 48px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.sheetText h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 27px;
+}
+
+.sheetText p {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+}
+
+.stats div {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 4px;
+  padding: 12px 4px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-muted);
+}
+
+.stats dt {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.stats dd {
+  margin: 0;
+  font-size: 16px;
+}
+
+.button {
+  width: 100%;
+  font-weight: 400;
+}
+
+.archiveGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.archiveCard {
+  padding: 0 0 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.archiveCard > span,
+.archiveCard > small {
+  display: block;
+  margin: 8px 12px 0;
+  font-size: 13px;
+}
+
+.archiveCard > small {
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+}
+
+.smallBoard {
+  height: 150px;
+  border-radius: 0;
+}
+
+.smallBoard .plant {
+  width: 28px;
+  height: 32px;
+}
+
+.smallBoard .plant img {
+  max-width: 18px;
+  max-height: 28px;
+}
+
+.smallBoard .soil {
+  width: 10px;
+  height: 3px;
+}

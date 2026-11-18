@@ -1,0 +1,310 @@
+/* 피그마 S-02 홈 (5:31) · S-02-1 (15:370) · E-01 (14:196) 기준 */
+.page {
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 12px 24px 40px;
+  word-break: keep-all;
+}
+
+/* S-02-1은 메인 카드 아래 버튼이 하나 더 있어 간격이 좁음 */
+.contentResume {
+  gap: 20px;
+}
+
+/* 인사 */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.greetingRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.greeting {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+}
+
+.iconButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 22px;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.headline {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.48px;
+  white-space: pre-line;
+}
+
+/* 메인 카드 */
+.mainCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 20px;
+  border: none;
+  border-radius: var(--radius-xl);
+  background-color: var(--color-action-primary);
+  color: var(--color-inverse);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color var(--duration-hover) ease-out,
+    transform var(--duration-pressed) ease-out;
+}
+
+.mainCard:active {
+  transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  .mainCard:hover {
+    background-color: var(--color-action-primary-hover);
+  }
+}
+
+.mainIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgb(255 255 255 / 20%);
+}
+
+.mainText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.mainTitle {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+}
+
+.mainDescription {
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+  white-space: pre-line;
+}
+
+.mainFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.mainFooterText {
+  font-size: 13px;
+  line-height: 1.5;
+  letter-spacing: -0.26px;
+}
+
+.mainArrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-inverse);
+}
+
+/* 진행 중인 목표 */
+.goals {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-margin-top: 16px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectionTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.34px;
+}
+
+.sectionCount {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+}
+
+.goalList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* E-01 빈 상태 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 24px 24px;
+  border: 1.5px dashed var(--color-border);
+  border-radius: var(--radius-xl);
+}
+
+.emptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-surface-muted);
+}
+
+.emptyText {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.32px;
+}
+
+.emptyDescription {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+  white-space: pre-line;
+}
+
+.emptyAction {
+  width: 100%;
+  padding-top: 6px;
+}
+
+/* 이전 행동 기록 보기 */
+.menuRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin: 0;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.menuIcon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--color-surface);
+}
+
+.menuText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  line-height: 1.5;
+}
+
+.menuTitle {
+  color: var(--color-text-primary);
+  font-size: 15px;
+  line-height: 1.55;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+.menuDescription {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  letter-spacing: -0.26px;
+}
+
+.iconButton:focus-visible,
+.mainCard:focus-visible,
+.menuRow:focus-visible {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mainCard {
+    transition: none;
+  }
+}

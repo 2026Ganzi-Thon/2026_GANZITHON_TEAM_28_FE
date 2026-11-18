@@ -1,0 +1,55 @@
+/* 피그마 Input/TextArea (node 12:191) 기준 */
+.field {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  padding: 16px 16px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  transition: border-color var(--duration-hover) ease-out;
+}
+
+.field:focus-within {
+  padding: 15px 15px 13px; /* 테두리 2px만큼 안쪽 위치 유지 */
+  border: 2px solid var(--color-action-primary);
+}
+
+.error,
+.error:focus-within {
+  padding: 15.5px 15.5px 13.5px; /* 테두리 1.5px만큼 안쪽 위치 유지 */
+  border: 1.5px solid var(--color-feedback-error);
+}
+
+.input {
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: -0.3px;
+  resize: none;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+  opacity: 1;
+}
+
+.counter {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.24px;
+  text-align: right;
+}

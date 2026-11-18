@@ -1,0 +1,119 @@
+/* 피그마 Overlay/Modal (node 9:128) 기준 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dim {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-dim);
+  animation: dim-in 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.modal {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: calc(100% - 64px);
+  max-width: 329px;
+  padding: 28px 20px 20px;
+  border-radius: 24px;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-high);
+  animation: modal-in 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 26px;
+  background-color: var(--color-surface-muted);
+}
+
+.iconWrap > * {
+  width: 24px;
+  height: 24px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 4px;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+  white-space: pre-line;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap; /* 글자가 커져 한 줄에 안 들어가면 버튼을 세로로 쌓음 (접근성 · 글자 크게 보기) */
+  gap: 8px;
+  width: 100%;
+  padding-top: 4px;
+}
+
+/* G-03 '지우기'처럼 되돌리기 어려운 선택은 오류 색 글자 */
+.actions .danger {
+  color: var(--color-action-destructive);
+}
+
+/* 모달 안 버튼은 가로로 반씩 (높이는 기본 버튼과 같은 최소 56)
+   글자가 버튼 폭을 넘으면 min-width 때문에 줄이 바뀌고, 각 버튼이 한 줄을 다 씀 */
+.actions .action {
+  flex: 1 1 calc(50% - 4px);
+  min-width: max-content;
+}
+
+/* 모션 (피그마 Accessibility & Motion): 딤 200ms 페이드 + 카드 0.96→1 + 페이드 250ms */
+@keyframes dim-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+/* 움직임 줄이기: 크기 변화 없이 150ms 페이드만 */
+@media (prefers-reduced-motion: reduce) {
+  .dim,
+  .modal {
+    animation: dim-in 150ms linear;
+  }
+}

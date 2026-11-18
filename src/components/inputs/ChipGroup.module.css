@@ -1,0 +1,6 @@
+/* 칩 목록은 자동 줄바꿈 · 간격 8 (피그마 Energy/Burden Chips) */
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

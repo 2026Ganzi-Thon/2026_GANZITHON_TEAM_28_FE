@@ -1,0 +1,76 @@
+/* 피그마 Overlay/BottomSheet/NotificationPermission (node 34:374) 기준 */
+.sheet {
+  gap: 20px;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: var(--color-surface-muted);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  word-break: keep-all;
+}
+
+.title {
+  margin: 0;
+  outline: none;
+  color: var(--color-text-primary);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.48px;
+  white-space: pre-line;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+}
+
+.promises {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-muted);
+  list-style: none;
+}
+
+.promise {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.28px;
+}
+
+.promise img {
+  flex-shrink: 0;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.fullWidth {
+  width: 100%;
+}

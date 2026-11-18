@@ -1,0 +1,17 @@
+/* 피그마 Form/ErrorMessage (node 12:195) 기준 */
+.message {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding-left: 2px;
+  color: var(--color-feedback-error);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.26px;
+}
+
+.icon {
+  flex-shrink: 0;
+}

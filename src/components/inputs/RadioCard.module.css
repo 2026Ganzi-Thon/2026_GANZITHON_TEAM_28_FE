@@ -1,0 +1,83 @@
+/* 피그마 Option/RadioCard (node 7:93) 기준 */
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color 150ms ease-out;
+}
+
+/* 선택: 테두리 1.5px 메인 컬러 (안쪽 위치 유지) */
+.selected {
+  padding: 15.5px;
+  border: 1.5px solid var(--color-action-primary);
+}
+
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.radio {
+  display: flex;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 50%;
+  background-color: var(--color-surface);
+}
+
+.radioOn {
+  border: none;
+}
+
+.card:has(.input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.title {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.32px;
+}
+
+.description {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  letter-spacing: -0.26px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
